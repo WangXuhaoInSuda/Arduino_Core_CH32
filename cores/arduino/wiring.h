@@ -26,7 +26,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "binary.h"
 #include "itoa.h"
 #include "utils.h"
 

@@ -21,6 +21,7 @@
 #define _WIRING_TIME_H_
 
 #include "clock.h"
+#include "dwt.h"
 
 #ifdef __cplusplus
 extern "C" {
