@@ -1,0 +1,14 @@
+
+Nanjing Qinheng Microelectronics Co., Ltd. 2021.06
+
+http://wch-ic.com
+
+
+-- Core£ºkernal system header file
+--Debug£ºdelay fuction¡¢UART debugging source file and header file
+-- Ld£ºld file  
+-- Peripheral£ºbasic peripheral driver source file and header file
+-- Startup£ºstartup file 
+-- startup_ch32v30x_D8.S£ºapplied to the CH32V303
+-- startup_ch32v30x_D8C.S£ºapplied to the CH32V307 and the CH32V305  
+ 
