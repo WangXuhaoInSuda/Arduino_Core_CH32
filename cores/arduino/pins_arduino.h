@@ -14,6 +14,10 @@
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
+  ----------------------------
+  modified by WangXuhao
+  20220221
 */
 #ifndef _PINS_ARDUINO_H_
 #define _PINS_ARDUINO_H_
@@ -24,7 +28,7 @@
 _Static_assert(LastPort <= 0x0F, "PortName must be less than 16");
 
 // Arduino digital pins alias
-// GPIO port (A to K) * 16 pins: 176
+// GPIO port (A to E) * 16 pins: 80
 enum {
   D0,   D1,   D2,   D3,   D4,   D5,   D6,   D7,   D8,   D9,
   D10,  D11,  D12,  D13,  D14,  D15,  D16,  D17,  D18,  D19,
@@ -34,16 +38,6 @@ enum {
   D50,  D51,  D52,  D53,  D54,  D55,  D56,  D57,  D58,  D59,
   D60,  D61,  D62,  D63,  D64,  D65,  D66,  D67,  D68,  D69,
   D70,  D71,  D72,  D73,  D74,  D75,  D76,  D77,  D78,  D79,
-  D80,  D81,  D82,  D83,  D84,  D85,  D86,  D87,  D88,  D89,
-  D90,  D91,  D92,  D93,  D94,  D95,  D96,  D97,  D98,  D99,
-  D100, D101, D102, D103, D104, D105, D106, D107, D108, D109,
-  D110, D111, D112, D113, D114, D115, D116, D117, D118, D119,
-  D120, D121, D122, D123, D124, D125, D126, D127, D128, D129,
-  D130, D131, D132, D133, D134, D135, D136, D137, D138, D139,
-  D140, D141, D142, D143, D144, D145, D146, D147, D148, D149,
-  D150, D151, D152, D153, D154, D155, D156, D157, D158, D159,
-  D160, D161, D162, D163, D164, D165, D166, D167, D168, D169,
-  D170, D171, D172, D173, D174, D175,
   DMAX
 };
 
@@ -156,43 +150,31 @@ static const uint8_t A23 = PIN_A23;
 #endif
 
 // Default for Arduino connector compatibility
-// SPI Definitions
+// SPI Definitions SPI1
 #ifndef PIN_SPI_SS
-#define PIN_SPI_SS                  10
-#endif
-#ifndef PIN_SPI_SS1
-#define PIN_SPI_SS1                 4
-#endif
-#ifndef PIN_SPI_SS2
-#define PIN_SPI_SS2                 7
-#endif
-#ifndef PIN_SPI_SS3
-#define PIN_SPI_SS3                 8
+#define PIN_SPI_SS                  4
 #endif
 #ifndef PIN_SPI_MOSI
-#define PIN_SPI_MOSI                11
+#define PIN_SPI_MOSI                7
 #endif
 #ifndef PIN_SPI_MISO
-#define PIN_SPI_MISO                12
+#define PIN_SPI_MISO                6
 #endif
 #ifndef PIN_SPI_SCK
-#define PIN_SPI_SCK                 13
+#define PIN_SPI_SCK                 5
 #endif
 
 static const uint8_t SS   = PIN_SPI_SS;
-static const uint8_t SS1  = PIN_SPI_SS1;
-static const uint8_t SS2  = PIN_SPI_SS2;
-static const uint8_t SS3  = PIN_SPI_SS3;
 static const uint8_t MOSI = PIN_SPI_MOSI;
 static const uint8_t MISO = PIN_SPI_MISO;
 static const uint8_t SCK  = PIN_SPI_SCK;
 
-// I2C Definitions
+// I2C Definitions I2C1
 #ifndef PIN_WIRE_SDA
-#define PIN_WIRE_SDA                14
+#define PIN_WIRE_SDA                24
 #endif
 #ifndef PIN_WIRE_SCL
-#define PIN_WIRE_SCL                15
+#define PIN_WIRE_SCL                23
 #endif
 
 static const uint8_t SDA = PIN_WIRE_SDA;

@@ -15,6 +15,10 @@
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+    ----------------------------
+  modified by WangXuhao
+  20220221
+  deleted some headfiles
 */
 
 #ifndef _WIRING_H_
@@ -34,17 +38,11 @@
 #include "wiring_digital.h"
 #include "wiring_pulse.h"
 #include "wiring_shift.h"
-#include "wiring_time.h"
 #include "WInterrupts.h"
 
-#include <board.h>
 
 #ifdef __cplusplus
-#include "HardwareSerial.h"
-#include "Tone.h"
-#include "WCharacter.h"
-#include "WMath.h"
-#include "WString.h"
+
 #endif // __cplusplus
 
 #define clockCyclesPerMicrosecond() ( SystemCoreClock / 1000000L )
