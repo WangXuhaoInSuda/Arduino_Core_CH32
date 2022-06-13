@@ -103,7 +103,7 @@ extern "C"
       PD15, // PD15
 
       PE0,     // PE0
-      PE1      // PE1
+      PE1£¬      // PE1
       PE2,     // PE2
       PE3,     // PE3
       PE4,     // PE4

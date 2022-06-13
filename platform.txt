@@ -17,15 +17,15 @@ compiler.warning_flags.default=
 compiler.warning_flags.more=-Wall
 compiler.warning_flags.all=-Wall -Wextra
 
-compiler.path={runtime.tools.xpack-arm-none-eabi-gcc-10.3.1-2.3.path}/bin/
+compiler.path={runtime.tools.mingw32-5.1.6.path}/bin/
 
-compiler.S.cmd=arm-none-eabi-gcc
-compiler.c.cmd=arm-none-eabi-gcc
-compiler.cpp.cmd=arm-none-eabi-g++
-compiler.ar.cmd=arm-none-eabi-gcc-ar
-compiler.c.elf.cmd=arm-none-eabi-gcc
-compiler.objcopy.cmd=arm-none-eabi-objcopy
-compiler.elf2hex.cmd=arm-none-eabi-objcopy
+compiler.S.cmd=gcc
+compiler.c.cmd=gcc
+compiler.cpp.cmd=g++
+compiler.ar.cmd=ar
+compiler.c.elf.cmd=gcc
+compiler.objcopy.cmd=objcopy
+compiler.elf2hex.cmd=objcopy
 compiler.libraries.ldflags=
 
 compiler.extra_flags=-mcpu={build.mcu} {build.flags.fp} -DUSE_FULL_LL_DRIVER -mthumb "@{build.opt.path}"
