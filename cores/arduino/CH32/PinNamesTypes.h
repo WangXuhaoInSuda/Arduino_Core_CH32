@@ -42,7 +42,8 @@ extern "C"
     /*  CH32 PIN data as used is coded on 16 bits as below
      *   [1:0]  GPIO Mode & Speed 00 input, 01 output 10MHz, 10 output 2MHz, 11 output 50MHz
      *   [3:2]  GPIO CNF at input mode£¨MODE=00b£©£º00£ºanalog input£»01£ºfloat input£»10£ºPD input¡£
-                 11£ºreserved¡£ at output mode£¨MODE>00b£©£º00£ºPP£»01£ºOD£»
+                 11£ºreserved¡£ 
+                 at output mode£¨MODE>00b£©£º00£ºPP£»01£ºOD£»
                  10£ºAF_PP£»11£ºAF_OD¡£
      *   [5:4]  for AF config
      *   [9:6]  Channel (Analog/Timer/USART specific)
