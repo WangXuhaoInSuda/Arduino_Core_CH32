@@ -41,10 +41,16 @@ extern "C"
 
     /*  CH32 PIN data as used is coded on 16 bits as below
      *   [1:0]  GPIO Mode & Speed 00 input, 01 output 10MHz, 10 output 2MHz, 11 output 50MHz
-     *   [3:2]  GPIO CNF at input mode£¨MODE=00b£©£º00£ºanalog input£»01£ºfloat input£»10£ºPD input¡£
-                 11£ºreserved¡£ 
-                 at output mode£¨MODE>00b£©£º00£ºPP£»01£ºOD£»
-                 10£ºAF_PP£»11£ºAF_OD¡£
+     *   [3:2]  GPIO CNF at input mode£¨MODE=00b£©£º
+                00£ºanalog input£»
+                01£ºfloat input£»
+                10£ºPD input¡£
+                11£ºreserved¡£ 
+                at output mode£¨MODE>00b£©£º
+                00£ºPP£»
+                01£ºOD£»
+                10£ºAF_PP£»
+                11£ºAF_OD¡£
      *   [5:4]  for AF config
      *   [9:6]  Channel (Analog/Timer/USART specific)
      *   [16:10]  Reserved
@@ -54,73 +60,49 @@ extern "C"
 #define CH_PIN_MODE_SHIFT 0
 #define CH_PIN_MODE_BITS (CH_PIN_MODE_MASK << CH_PIN_MODE_SHIFT)
 
-#define CH_PIN_OD_MASK 0x01
-#define CH_PIN_OD_SHIFT 2
-#define CH_PIN_OD_BITS (CH_PIN_OD_MASK << CH_PIN_OD_SHIFT)
+#define CH_PIN_CNF_MASK 0x03
+#define CH_PIN_CNF_SHIFT 2
+#define CH_PIN_CNF_BITS (CH_PIN_CNF_MASK << CH_PIN_CNF_SHIFT)
 
-#define STM_PIN_PUPD_MASK 0x03
-#define STM_PIN_PUPD_SHIFT 4
-#define STM_PIN_PUPD_BITS (STM_PIN_PUPD_MASK << STM_PIN_PUPD_SHIFT)
+#define CH_PIN_AFCONFIG_MASK 0x03
+#define CH_PIN_AFCONFIG_SHIFT 4
+#define CH_PIN_AFCONFIG_BITS (CH_PIN_AFCONFIG_MASK << CH_PIN_AFCONFIG_SHIFT)
 
-#define STM_PIN_SPEED_MASK 0x03
-#define STM_PIN_SPEED_SHIFT 6
-#define STM_PIN_SPEED_BITS (STM_PIN_SPEED_MASK << STM_PIN_SPEED_SHIFT)
+#define CH_PIN_CHANNELCONFIG_MASK 0x0F
+#define CH_PIN_CHANNELCONFIG_SHIFT 6
+#define CH_PIN_CHANNELCONFIG_BITS (CH_PIN_CHANNELCONFIG_MASK << CH_PIN_CHANNELCONFIG_SHIFT)
 
-#define STM_PIN_AFNUM_MASK 0x7F
-#define STM_PIN_AFNUM_SHIFT 8
-#define STM_PIN_AFNUM_BITS (STM_PIN_AFNUM_MASK << STM_PIN_AFNUM_SHIFT)
+#define CH_PIN_MODE(X) (((X) >> CH_PIN_MODE_SHIFT) & CH_PIN_MODE_MASK)
+#define CH_PIN_CNF(X) (((X) >> CH_PIN_CNF_SHIFT) & CH_PIN_CNF_MASK)
+#define CH_PIN_AFCONFIG(X) (((X) >> CH_PIN_AFCONFIG_SHIFT) & CH_PIN_AFCONFIG_MASK)
+#define CH_PIN_CHANNELCONFIG(X) (((X) >> CH_PIN_CHANNELCONFIG_SHIFT) & CH_PIN_CHANNELCONFIG_MASK)
 
-#define STM_PIN_CHAN_MASK 0x1F
-#define STM_PIN_CHAN_SHIFT 15
-#define STM_PIN_CHANNEL_BIT (STM_PIN_CHAN_MASK << STM_PIN_CHAN_SHIFT)
+#define CH_PIN_DEFINE(MODE, CNF, AFCONFIG) ((int)(MODE) |                                     \
+                                              ((CNF & CH_PIN_CNF_MASK) << CH_PIN_CNF_SHIFT) | \
+                                              ((AFCONFIG & CH_PIN_AFCONFIG_MASK) << CH_PIN_AFCONFIG_SHIFT))
 
-#define STM_PIN_INV_MASK 0x01
-#define STM_PIN_INV_SHIFT 20
-#define STM_PIN_INV_BIT (STM_PIN_INV_MASK << STM_PIN_INV_SHIFT)
-
-#define STM_PIN_AN_CTRL_MASK 0x01
-#define STM_PIN_AN_CTRL_SHIFT 21
-#define STM_PIN_ANALOG_CONTROL_BIT (STM_PIN_AN_CTRL_MASK << STM_PIN_AN_CTRL_SHIFT)
-
-#define STM_PIN_FUNCTION(X) (((X) >> STM_PIN_FUNCTION_SHIFT) & STM_PIN_FUNCTION_MASK)
-#define STM_PIN_OD(X) (((X) >> STM_PIN_OD_SHIFT) & STM_PIN_OD_MASK)
-#define STM_PIN_PUPD(X) (((X) >> STM_PIN_PUPD_SHIFT) & STM_PIN_PUPD_MASK)
-#define STM_PIN_SPEED(X) (((X) >> STM_PIN_SPEED_SHIFT) & STM_PIN_SPEED_MASK)
-#define STM_PIN_AFNUM(X) (((X) >> STM_PIN_AFNUM_SHIFT) & STM_PIN_AFNUM_MASK)
-#define STM_PIN_CHANNEL(X) (((X) >> STM_PIN_CHAN_SHIFT) & STM_PIN_CHAN_MASK)
-#define STM_PIN_INVERTED(X) (((X) >> STM_PIN_INV_SHIFT) & STM_PIN_INV_MASK)
-#define STM_PIN_ANALOG_CONTROL(X) (((X) >> STM_PIN_AN_CTRL_SHIFT) & STM_PIN_AN_CTRL_MASK)
-#define STM_PIN_MODE(X) ((STM_PIN_OD((X)) << 4) | \
-                         (STM_PIN_FUNCTION((X)) & (~STM_PIN_OD_BITS)))
-
-#define STM_PIN_DEFINE(FUNC_OD, PUPD, AFNUM) ((int)(FUNC_OD) |                                     \
-                                              ((PUPD & STM_PIN_PUPD_MASK) << STM_PIN_PUPD_SHIFT) | \
-                                              ((AFNUM & STM_PIN_AFNUM_MASK) << STM_PIN_AFNUM_SHIFT))
-
-#define STM_PIN_DEFINE_EXT(FUNC_OD, PUPD, AFNUM, CHAN, INV)  \
-    ((int)(FUNC_OD) |                                        \
-     ((PUPD & STM_PIN_PUPD_MASK) << STM_PIN_PUPD_SHIFT) |    \
-     ((AFNUM & STM_PIN_AFNUM_MASK) << STM_PIN_AFNUM_SHIFT) | \
-     ((CHAN & STM_PIN_CHAN_MASK) << STM_PIN_CHAN_SHIFT) |    \
-     ((INV & STM_PIN_INV_MASK) << STM_PIN_INV_SHIFT))
+#define CH_PIN_DEFINE_EXT(MODE, CNF, AFCONFIG, CHANNELCONFIG)  \
+    ((int)(MODE) |                                        \
+     ((CNF & CH_PIN_CNF_MASK) << CH_PIN_CNF_SHIFT) |    \
+     ((AFCONFIG & CH_PIN_AFCONFIG_MASK) << CH_PIN_AFCONFIG_SHIFT) | \
+     ((CHANNELCONFIG & CH_PIN_CHANNELCONFIG_MASK) << CH_PIN_CHANNELCONFIG_SHIFT))
 
 /*
  * MACROS to support the legacy definition of PIN formats
  * The STM_MODE_ defines contain the function and the Push-pull/OpenDrain
  * configuration (legacy inheritance).
  */
-#define STM_PIN_DATA(FUNC_OD, PUPD, AFNUM) \
-    STM_PIN_DEFINE(FUNC_OD, PUPD, AFNUM)
-#define STM_PIN_DATA_EXT(FUNC_OD, PUPD, AFNUM, CHANNEL, INVERTED) \
-    STM_PIN_DEFINE_EXT(FUNC_OD, PUPD, AFNUM, CHANNEL, INVERTED)
+#define CH_PIN_DATA(MODE, CNF, AFCONFIG) CH_PIN_DEFINE(MODE, CNF, AFCONFIG)
+#define CH_PIN_DATA_EXT(MODE, CNF, AFCONFIG, CHANNELCONFIG) \
+    CH_PIN_DEFINE_EXT(MODE, CNF, AFCONFIG, CHANNELCONFIG)
 
     typedef enum
     {
-        STM_PIN_INPUT = 0,
-        STM_PIN_OUTPUT = 1,
-        STM_PIN_ALTERNATE = 2,
-        STM_PIN_ANALOG = 3,
-    } StmPinFunction;
+        CH_PIN_INPUT = 0,
+        CH_PIN_OUTPUT = 1,
+        CH_PIN_ALTERNATE = 2,
+        CH_PIN_ANALOG = 3,
+    } CHPinFunction;
 
 #define STM_MODE_INPUT (STM_PIN_INPUT)
 #define STM_MODE_OUTPUT_PP (STM_PIN_OUTPUT)

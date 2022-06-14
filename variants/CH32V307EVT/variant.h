@@ -42,6 +42,8 @@ extern "C"
    *----------------------------------------------------------------------------*/
   extern const PinName digitalPin[];
 
+
+#define NUM_DIGITAL_PINS 80
   enum
   {
     PA0,  // PA0/WKUP/ADC0

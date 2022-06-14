@@ -6,12 +6,14 @@ to be done : line 18-46
 #ifndef _CH32_DEF_
 #define _CH32_DEF_
 
-#define F_CPU SystemCoreClock
-
-#ifdef CH32V3xx
+#if defined(CH32V3xx) 
 #include "ch32v30x.h"
 #else
 #error "Chip series is not defined in boards.txt."
+#endif
+
+#ifndef F_CPU
+  #define F_CPU SystemCoreClock
 #endif
 
 // Here define some compatibility
@@ -23,7 +25,6 @@ to be done : line 18-46
  * Libc porting layers
  */
 #if defined (  __GNUC__  ) /* GCC CS3 */
-#include <syscalls.h> /** RedHat Newlib minimal stub */
 #define WEAK __attribute__ ((weak))
 #endif
 

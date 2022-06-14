@@ -1,6 +1,6 @@
 /*
-  Arduino.h - Main include file for the Arduino SDK
-  Copyright (c) 2005-2013 Arduino Team.  All right reserved.
+  Printable.h - Interface class that allows printing of complex types
+  Copyright (c) 2011 Adrian McEwen.  All right reserved.
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -17,35 +17,23 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef Arduino_h
-#define Arduino_h
+#ifndef Printable_h
+#define Printable_h
 
-#ifndef GCC_VERSION
-#define GCC_VERSION (__GNUC__ * 10000 \
-                     + __GNUC_MINOR__ * 100 \
-                     + __GNUC_PATCHLEVEL__)
+#include <stdlib.h>
+
+class Print;
+
+/** The Printable class provides a way for new classes to allow themselves to be printed.
+    By deriving from Printable and implementing the printTo method, it will then be possible
+    for users to print out instances of this class by passing them into the usual
+    Print::print and Print::println methods.
+*/
+
+class Printable {
+  public:
+    virtual size_t printTo(Print &p) const = 0;
+};
+
 #endif
-#if GCC_VERSION < 60300
-#error "GCC version 6.3 or higher is required"
-#endif
 
-#include "wiring.h"
-#include "board.h"
-#include "WSerial.h"
-/* sketch */
-
-#ifdef __cplusplus
-extern "C"{
-#endif // __cplusplus
-extern void setup( void ) ;
-extern void loop( void ) ;
-
-void yield(void);
-#ifdef __cplusplus
-} // extern "C"
-#endif // __cplusplus
-
-// Include pins variant
-#include "pins_arduino.h"
-
-#endif // Arduino_h
