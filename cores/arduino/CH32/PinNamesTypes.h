@@ -44,7 +44,7 @@ extern "C"
      *   [3:2]  GPIO CNF at input mode£¨MODE=00b£©£º
                 00£ºanalog input£»
                 01£ºfloat input£»
-                10£ºPD input¡£
+                10£ºPUPD input¡£
                 11£ºreserved¡£ 
                 at output mode£¨MODE>00b£©£º
                 00£ºPP£»
@@ -72,6 +72,22 @@ extern "C"
 #define CH_PIN_CHANNELCONFIG_SHIFT 6
 #define CH_PIN_CHANNELCONFIG_BITS (CH_PIN_CHANNELCONFIG_MASK << CH_PIN_CHANNELCONFIG_SHIFT)
 
+#define CH_PIN_OD_MASK 0x01
+#define CH_PIN_OD_SHIFT 2
+#define CH_PIN_OD_BITS (CH_PIN_OD_MASK << CH_PIN_OD_SHIFT)
+
+#define CH_PIN_AF_MASK 0x01
+#define CH_PIN_AF_SHIFT 3
+#define CH_PIN_AF_BITS (CH_PIN_AF_MASK << CH_PIN_AF_SHIFT)
+
+#define CH_PIN_PUPD_MASK 0x01
+#define CH_PIN_PUPD_SHIFT 3
+#define CH_PIN_PUPD_BITS (CH_PIN_PUPD_MASK << CH_PIN_PUPD_SHIFT)
+
+#define CH_PIN_FLOAT_MASK 0x01
+#define CH_PIN_FLOAT_SHIFT 2
+#define CH_PIN_FLOAT_BITS (CH_PIN_FLOAT_MASK << CH_PIN_FLOAT_SHIFT)
+
 #define CH_PIN_MODE(X) (((X) >> CH_PIN_MODE_SHIFT) & CH_PIN_MODE_MASK)
 #define CH_PIN_CNF(X) (((X) >> CH_PIN_CNF_SHIFT) & CH_PIN_CNF_MASK)
 #define CH_PIN_AFCONFIG(X) (((X) >> CH_PIN_AFCONFIG_SHIFT) & CH_PIN_AFCONFIG_MASK)
@@ -87,42 +103,35 @@ extern "C"
      ((AFCONFIG & CH_PIN_AFCONFIG_MASK) << CH_PIN_AFCONFIG_SHIFT) | \
      ((CHANNELCONFIG & CH_PIN_CHANNELCONFIG_MASK) << CH_PIN_CHANNELCONFIG_SHIFT))
 
-/*
- * MACROS to support the legacy definition of PIN formats
- * The STM_MODE_ defines contain the function and the Push-pull/OpenDrain
- * configuration (legacy inheritance).
- */
+
 #define CH_PIN_DATA(MODE, CNF, AFCONFIG) CH_PIN_DEFINE(MODE, CNF, AFCONFIG)
 #define CH_PIN_DATA_EXT(MODE, CNF, AFCONFIG, CHANNELCONFIG) \
     CH_PIN_DEFINE_EXT(MODE, CNF, AFCONFIG, CHANNELCONFIG)
 
     typedef enum
     {
-        CH_PIN_INPUT = 0,
-        CH_PIN_OUTPUT = 1,
-        CH_PIN_ALTERNATE = 2,
-        CH_PIN_ANALOG = 3,
+        CH_PIN_INPUT = 0x00,
+        CH_PIN_OUTPUT = 0x03,
+        CH_PIN_ALTERNATEFUNC = 0x0B, 
+        CH_PIN_ANALOG = 0x00,
     } CHPinFunction;
 
-#define STM_MODE_INPUT (STM_PIN_INPUT)
-#define STM_MODE_OUTPUT_PP (STM_PIN_OUTPUT)
-#define STM_MODE_OUTPUT_OD (STM_PIN_OUTPUT | STM_PIN_OD_BITS)
-#define STM_MODE_AF_PP (STM_PIN_ALTERNATE)
-#define STM_MODE_AF_OD (STM_PIN_ALTERNATE | STM_PIN_OD_BITS)
-#define STM_MODE_ANALOG (STM_PIN_ANALOG)
-#define STM_MODE_ANALOG_ADC_CONTROL (STM_PIN_ANALOG | STM_PIN_ANALOG_CONTROL_BIT)
+#define CH_MODE_INPUT (CH_PIN_INPUT | CH_PIN_FLOAT_BITS)
+#define CH_MODE_OUTPUT_PP (CH_PIN_OUTPUT)
+#define CH_MODE_OUTPUT_OD (CH_PIN_OUTPUT | CH_PIN_OD_BITS)
+#define CH_MODE_AF_PP (CH_PIN_ALTERNATEFUNC)
+#define CH_MODE_AF_OD (CH_PIN_ALTERNATEFUNC | CH_PIN_OD_BITS)
+#define CH_MODE_ANALOG (CH_PIN_ANALOG)
 
 // High nibble = port number (FirstPort <= PortName <= LastPort)
 // Low nibble  = pin number
-#define STM_PORT(X) (((uint32_t)(X) >> 4) & 0xF)
-#define STM_PIN(X) ((uint32_t)(X)&0xF)
+#define CH_PORT(X) (((uint32_t)(X) >> 4) & 0xF)
+#define CH_PIN(X) ((uint32_t)(X)&0xF)
 // Check PinName is valid: FirstPort <= PortName <= LastPort
 // As FirstPort is equal to 0 and STM_PORT cast as an unsigned
-// (STM_PORT(X) >= FirstPort)  is always true
-//#define STM_VALID_PINNAME(X) ((STM_PORT(X) >= FirstPort) && (STM_PORT(X) <= LastPort))
-#define STM_VALID_PINNAME(X) (STM_PORT(X) <= LastPort)
+#define CH_VALID_PINNAME(X) (CH_PORT(X) <= LastPort)
 
-#define STM_GPIO_PIN(X) ((uint16_t)(1 << STM_PIN(X)))
+#define CH_GPIO_PIN(X) ((uint16_t)(1 << CH_PIN(X)))
     /*  Defines to be used by application */
     typedef enum
     {
