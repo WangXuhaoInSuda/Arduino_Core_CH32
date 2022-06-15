@@ -18,5 +18,3 @@ else
   cp "$BUILD_SOURCE_PATH/build_opt.h" "$BUILD_PATH/sketch/build.opt"
 fi
 
-# Force include of SrcWrapper library
-echo "#include <SrcWrapper.h>" > "$BUILD_PATH/sketch/SrcWrapper.cpp"
