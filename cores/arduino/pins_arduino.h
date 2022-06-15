@@ -203,15 +203,15 @@ uint32_t pinNametoDigitalPin(PinName p);
                                      pin_in_pinmap(digitalPinToPinName(p), PinMap_SPI_SSEL))
 
 
-#define digitalPinToPort(p)         (get_GPIO_Port(STM_PORT(digitalPinToPinName(p))))
-#define digitalPinToBitMask(p)      (STM_GPIO_PIN(digitalPinToPinName(p)))
+#define digitalPinToPort(p)         (get_GPIO_Port(CH_PORT(digitalPinToPinName(p))))
+#define digitalPinToBitMask(p)      (CH_GPIO_PIN(digitalPinToPinName(p)))
 
-#define analogInPinToBit(p)         (STM_PIN(digitalPinToPinName(p)))
+#define analogInPinToBit(p)         (CH_PIN(digitalPinToPinName(p)))
 #define portOutputRegister(P)       (&(P->ODR))
 #define portInputRegister(P)        (&(P->IDR))
 
 #define portSetRegister(P)          (&(P->BSRR))
-#if defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32F7xx)
+#if defined(CH32F2xx) || defined(CH32F4xx) || defined(CH32F7xx)
 // For those series reset are in the high part so << 16U needed
 #define portClearRegister(P)        (&(P->BSRR))
 #else
@@ -219,7 +219,7 @@ uint32_t pinNametoDigitalPin(PinName p);
 #endif
 
 
-#if defined(STM32F1xx)
+#if defined(CH32F1xx)
 // Config registers split in 2 registers:
 // CRL: pin 0..7
 // CRH: pin 8..15
