@@ -22,7 +22,6 @@
 #ifndef _PINS_ARDUINO_H_
 #define _PINS_ARDUINO_H_
 // Include board variant
-#include <stdbool.h>
 #include "stdint.h"
 #include <stdlib.h> /* Required for static_assert */
 #include "variant.h"

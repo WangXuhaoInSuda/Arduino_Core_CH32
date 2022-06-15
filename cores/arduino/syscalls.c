@@ -10,6 +10,7 @@
   #include <sys/stat.h>
 #endif
 #include <errno.h>
+#include <sys/_types.h>
 #undef errno
 extern int errno;
 

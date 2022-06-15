@@ -33,6 +33,7 @@
 
 #include "pins_arduino.h"
 #include "ch32v30x_conf.h"
+#include "PinNames.h"
 #ifdef __cplusplus
 extern "C"
 {
