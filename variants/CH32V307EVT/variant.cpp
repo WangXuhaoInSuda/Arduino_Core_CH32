@@ -134,7 +134,7 @@ extern "C"
 
 //below modified on 20220614, no need to edit
 //----------------------------
-void SystemClock_Config(void)
+WEAK void SystemClock_Config(void)
 {
   SystemInit();
 }
