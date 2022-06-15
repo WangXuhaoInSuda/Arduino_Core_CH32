@@ -21,7 +21,7 @@
 #define Arduino_h
 
 #ifndef GCC_VERSION
-#define GCC_VERSION (__GNUC__ * 10000 \
+#define GCC_VERSION (__GNUC__ * 140000 \
                      + __GNUC_MINOR__ * 100 \
                      + __GNUC_PATCHLEVEL__)
 #endif
