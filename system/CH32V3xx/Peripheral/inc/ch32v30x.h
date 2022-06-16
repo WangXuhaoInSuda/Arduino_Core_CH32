@@ -5230,6 +5230,16 @@ typedef struct
 
 #include "ch32v30x_conf.h"
 
+///////////////////////add contents///////////////////
+//for arduino milliseconds
+#define  TICK_FREQ_10HZ         100U
+#define  TICK_FREQ_100HZ        10U
+#define  TICK_FREQ_1KHZ         1U
+#define  TICK_FREQ_DEFAULT      TICK_FREQ_1KHZ
+
+extern __IO uint32_t mTick;
+extern uint32_t mTickPrio;
+extern uint32_t mTickFreq;
 
 #ifdef __cplusplus
 }

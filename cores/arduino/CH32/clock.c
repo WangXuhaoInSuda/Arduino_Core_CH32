@@ -35,30 +35,126 @@
   *
   ******************************************************************************
   */
-#include "backup.h"
 #include "clock.h"
-#include "stm32yyxx_ll_cortex.h"
-
+#include "core_riscv.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
+//////////////////////////////
+#define NVIC_PRIO_BITS 4 //ch32v3xx uses 4 bits for the priority levels
+__IO uint64_t mTick;
+uint64_t mTickPrio =  (1UL << NVIC_PRIO_BITS);
+uint64_t mTickFreq = TICK_FREQ_DEFAULT;
+
+WEAK void IncTick(void)
+{
+  mTick += mTickFreq;
+}
+
+WEAK uint64_t GetTick(void)
+{
+  return mTick;
+}
+
+WEAK uint64_t GetTickPrio(void)
+{
+  return mTickPrio;
+}
+
+
+
+#define SysTick_LOAD_RELOAD_Msk   0xFFFFFFFF
+#define SysTick_CTLR_STE_Msk      0x00000001
+#define SysTick_CTLR_STIE_Msk     0x00000002
+#define SysTick_CTLR_STCLK_Msk    0x00000004
+#define SysTick_CTLR_STRE_Msk     0x00000008
+#define SysTick_CTLR_MODE_Msk     0x00000010
+#define SysTick_CTLR_INIT_Msk     0x00000020
+#define SysTick_CTLR_SWIE_Msk     0x80000000
+uint64_t SysTick_Config(uint64_t ticks)
+{
+  if ((ticks - 1UL) > SysTick_LOAD_RELOAD_Msk)
+  {
+    return (1UL);                                                   /* Reload value impossible */
+  }
+
+  SysTick->CMP  = (uint64_t)(ticks - 1UL);  
+  NVIC_EnableIRQ(SysTicK_IRQn);                       /* set reload register */
+  NVIC_SetPriority (SysTicK_IRQn, (1UL << NVIC_PRIO_BITS) - 1UL); /* set Priority for Systick Interrupt */
+  SysTick->CNT   = 0UL;                                             /* Load the SysTick Counter Value */
+  SysTick->CTLR  = SysTick_CTLR_STE_Msk   |
+                   SysTick_CTLR_STIE_Msk  |
+                   SysTick_CTLR_STCLK_Msk |
+                   SysTick_CTLR_STRE_Msk  |
+                   SysTick_CTLR_INIT_Msk
+                   ;                         /* Enable SysTick IRQ and SysTick Timer */
+  return (0UL);                                                     /* Function successful */
+}
+
+#define STATUS_OK 1
+#define STATUS_ERROR 0
+WEAK uint8_t InitTick(uint32_t TickPriority)
+{
+  uint8_t  status = STATUS_OK;
+
+  if (mTickFreq != 0U)
+  {
+    /*Configure the SysTick to have interrupt in 1ms time basis*/
+    if (SysTick_Config(SystemCoreClock / (1000U / mTickFreq)) == 0U)
+    {
+      /* Configure the SysTick IRQ priority */
+      if (TickPriority < (1UL << NVIC_PRIO_BITS))
+      {
+        NVIC_SetPriority(SysTicK_IRQn, TickPriority);
+        mTickPrio = TickPriority;
+      }
+      else
+      {
+        status = STATUS_ERROR;
+      }
+    }
+    else
+    {
+      status = STATUS_ERROR;
+    }
+  }
+  else
+  {
+    status = STATUS_ERROR;
+  }
+
+  /* Return function status */
+  return status;
+}
+
+void SysTick_Handler(void){
+  IncTick();
+}
+
+
+//////////////////////////////////
+uint32_t SYSTICK_IsActiveCounterFlag(void)
+{
+  return ((SysTick->CTLR & SysTick_CTLR_COUNTFLAG_Msk) == (SysTick_CTLR_COUNTFLAG_Msk));
+}
+
 
 /**
   * @brief  Function called to read the current micro second
   * @param  None
   * @retval None
   */
-uint32_t getCurrentMicros(void)
+uint64_t getCurrentMicros(void)
 {
   /* Ensure COUNTFLAG is reset by reading SysTick control and status register */
-  LL_SYSTICK_IsActiveCounterFlag();
-  uint32_t m = HAL_GetTick();
-  uint32_t u = SysTick->LOAD - SysTick->VAL;
-  if (LL_SYSTICK_IsActiveCounterFlag()) {
+  SYSTICK_IsActiveCounterFlag();
+  uint64_t m = GetTick();
+  uint64_t u = SysTick->CMP - SysTick->CNT;
+  if (SYSTICK_IsActiveCounterFlag()) {
     m = HAL_GetTick();
-    u = SysTick->LOAD - SysTick->VAL;
+    u = SysTick->CMP - SysTick->CNT;
   }
-  return (m * 1000 + (u * 1000) / SysTick->LOAD);
+  return (m * 1000 + (u * 1000) / SysTick->CMP);
 }
 
 /**
@@ -66,84 +162,9 @@ uint32_t getCurrentMicros(void)
   * @param  None
   * @retval None
   */
-uint32_t getCurrentMillis(void)
+uint64_t getCurrentMillis(void)
 {
-  return HAL_GetTick();
-}
-
-void noOsSystickHandler()
-{
-
-}
-
-void osSystickHandler() __attribute__((weak, alias("noOsSystickHandler")));
-/**
-  * @brief  Function called when the tick interruption falls
-  * @param  None
-  * @retval None
-  */
-void SysTick_Handler(void)
-{
-  HAL_IncTick();
-  HAL_SYSTICK_IRQHandler();
-  osSystickHandler();
-}
-
-/**
-  * @brief  Enable the specified clock if not already set
-  * @param  source: clock source: LSE_CLOCK, LSI_CLOCK, HSI_CLOCK or HSE_CLOCK
-  * @retval None
-  */
-void enableClock(sourceClock_t source)
-{
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-
-  enableBackupDomain();
-
-  switch (source) {
-    case LSI_CLOCK:
-#ifdef STM32WBxx
-      if (__HAL_RCC_GET_FLAG(RCC_FLAG_LSI1RDY) == RESET) {
-        RCC_OscInitStruct.OscillatorType =  RCC_OSCILLATORTYPE_LSI1;
-#else
-      if (__HAL_RCC_GET_FLAG(RCC_FLAG_LSIRDY) == RESET) {
-        RCC_OscInitStruct.OscillatorType =  RCC_OSCILLATORTYPE_LSI;
-#endif
-        RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-      }
-      break;
-    case HSI_CLOCK:
-      if (__HAL_RCC_GET_FLAG(RCC_FLAG_HSIRDY) == RESET) {
-        RCC_OscInitStruct.OscillatorType =  RCC_OSCILLATORTYPE_HSI;
-        RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-        RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-      }
-      break;
-    case LSE_CLOCK:
-      if (__HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) == RESET) {
-#ifdef __HAL_RCC_LSEDRIVE_CONFIG
-        __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
-#endif
-        RCC_OscInitStruct.OscillatorType =  RCC_OSCILLATORTYPE_LSE;
-        RCC_OscInitStruct.LSEState = RCC_LSE_ON;
-      }
-      break;
-    case HSE_CLOCK:
-      if (__HAL_RCC_GET_FLAG(RCC_FLAG_HSERDY) == RESET) {
-        RCC_OscInitStruct.OscillatorType =  RCC_OSCILLATORTYPE_HSE;
-        RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-      }
-      break;
-    default:
-      /* No valid clock to enable */
-      break;
-  }
-  if (RCC_OscInitStruct.OscillatorType != RCC_OSCILLATORTYPE_NONE) {
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-      Error_Handler();
-    }
-  }
+  return GetTick();
 }
 
 #ifdef __cplusplus

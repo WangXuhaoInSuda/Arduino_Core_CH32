@@ -98,10 +98,10 @@ typedef struct{
 /* memory mapped structure for SysTick */
 typedef struct
 {
-    __IO u32 CTLR;
-    __IO u32 SR;
-    __IO u64 CNT;
-    __IO u64 CMP;
+    __IO u32 CTLR;  //control reg
+    __IO u32 SR;    //state reg
+    __IO u64 CNT;   //current value reg
+    __IO u64 CMP;   //cmp reg
 }SysTick_Type;
 
 

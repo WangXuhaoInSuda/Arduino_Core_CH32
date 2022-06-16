@@ -40,7 +40,10 @@
 #define __CLOCK_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32_def.h"
+#include "ch32_def.h"
+#define SysTick_CTLR_COUNTFLAG_Pos 0U
+#define SysTick_CTLR_COUNTFLAG_Msk (1UL << SysTick_CTLR_COUNTFLAG_Pos)
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,10 +61,15 @@ typedef enum {
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-uint32_t getCurrentMillis(void);
-uint32_t getCurrentMicros(void);
-
-void enableClock(sourceClock_t source);
+uint64_t getCurrentMillis(void);
+uint64_t getCurrentMicros(void);
+uint32_t SYSTICK_IsActiveCounterFlag(void);
+void SysTick_Handler(void)  __attribute__((interrupt()));
+WEAK void IncTick(void);
+WEAK uint64_t GetTick(void);
+WEAK uint64_t GetTickPrio(void);
+uint64_t SysTick_Config(uint64_t ticks);
+WEAK uint8_t InitTick(uint32_t TickPriority);
 #ifdef __cplusplus
 }
 #endif
