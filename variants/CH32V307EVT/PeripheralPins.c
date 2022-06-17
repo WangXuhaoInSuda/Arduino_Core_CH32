@@ -75,7 +75,7 @@ const PinMap PinMap_DAC[] = {
 
 #ifdef I2C_MODULE_ENABLED
 const PinMap PinMap_I2C_SDA[] = {
-  {PB_9,  I2C1, CH_PIN_DATA_EXT(GPIO_Mode_AF_OD, GPIO_Mode_AF_OD, GPIO_AF4_I2C1)},
+  {PB_7,  I2C1, CH_PIN_DATA_EXT(GPIO_Mode_AF_OD, GPIO_Mode_AF_OD, 1, 0)},
   {PB_4,  I2C2, CH_PIN_DATA_EXT(GPIO_Mode_AF_OD, GPIO_Mode_AF_OD, GPIO_AF4_I2C3)},
   {PB_7,  I2C1, CH_PIN_DATA_EXT(GPIO_Mode_AF_OD, GPIO_Mode_AF_OD, GPIO_AF4_I2C1)},
   {NC,    NP,    0}
