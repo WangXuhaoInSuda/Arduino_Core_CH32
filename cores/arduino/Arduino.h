@@ -33,6 +33,7 @@
 #include "board.h"
 #include "WSerial.h"
 #include "clock.h"
+#include "pinmap.h"
 /* sketch */
 
 #ifdef __cplusplus

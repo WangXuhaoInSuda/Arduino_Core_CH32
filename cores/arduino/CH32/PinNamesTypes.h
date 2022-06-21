@@ -51,9 +51,10 @@ extern "C"
                 01£ºOD£»
                 10£ºAF_PP£»
                 11£ºAF_OD¡£
-     *   [5:4]  for AF config
-     *   [9:6]  Channel (Analog/Timer/USART specific)
-     *   [16:10]  Reserved
+     *   [4]  for AF config 0:AF OFF 1:AF ON
+     *   [6:5]  for PUPD config 01:pull down 10:pull up
+     *   [10:7]  Channel (Analog/Timer/USART specific)
+     *   [15:9]  Reserved
      */
 
 #define CH_PIN_MODE_MASK 0x03
@@ -64,25 +65,21 @@ extern "C"
 #define CH_PIN_CNF_SHIFT 2
 #define CH_PIN_CNF_BITS (CH_PIN_CNF_MASK << CH_PIN_CNF_SHIFT)
 
-#define CH_PIN_AFCONFIG_MASK 0x03
+#define CH_PIN_AFCONFIG_MASK 0x01
 #define CH_PIN_AFCONFIG_SHIFT 4
 #define CH_PIN_AFCONFIG_BITS (CH_PIN_AFCONFIG_MASK << CH_PIN_AFCONFIG_SHIFT)
 
+#define CH_PIN_PUPD_MASK 0x03
+#define CH_PIN_PUPD_SHIFT 5
+#define CH_PIN_PUPD_BITS (CH_PIN_PUPD_MASK << CH_PIN_PUPD_SHIFT)
+
 #define CH_PIN_CHANNELCONFIG_MASK 0x0F
-#define CH_PIN_CHANNELCONFIG_SHIFT 6
+#define CH_PIN_CHANNELCONFIG_SHIFT 7
 #define CH_PIN_CHANNELCONFIG_BITS (CH_PIN_CHANNELCONFIG_MASK << CH_PIN_CHANNELCONFIG_SHIFT)
 
 #define CH_PIN_OD_MASK 0x01
 #define CH_PIN_OD_SHIFT 2
 #define CH_PIN_OD_BITS (CH_PIN_OD_MASK << CH_PIN_OD_SHIFT)
-
-#define CH_PIN_AF_MASK 0x01
-#define CH_PIN_AF_SHIFT 3
-#define CH_PIN_AF_BITS (CH_PIN_AF_MASK << CH_PIN_AF_SHIFT)
-
-#define CH_PIN_PUPD_MASK 0x01
-#define CH_PIN_PUPD_SHIFT 3
-#define CH_PIN_PUPD_BITS (CH_PIN_PUPD_MASK << CH_PIN_PUPD_SHIFT)
 
 #define CH_PIN_FLOAT_MASK 0x01
 #define CH_PIN_FLOAT_SHIFT 2
@@ -91,37 +88,40 @@ extern "C"
 #define CH_PIN_MODE(X) (((X) >> CH_PIN_MODE_SHIFT) & CH_PIN_MODE_MASK)
 #define CH_PIN_CNF(X) (((X) >> CH_PIN_CNF_SHIFT) & CH_PIN_CNF_MASK)
 #define CH_PIN_AFCONFIG(X) (((X) >> CH_PIN_AFCONFIG_SHIFT) & CH_PIN_AFCONFIG_MASK)
+#define CH_PIN_PUPD(X) (((X) >> CH_PIN_PUPD_SHIFT) & CH_PIN_PUPD_MASK)
 #define CH_PIN_CHANNELCONFIG(X) (((X) >> CH_PIN_CHANNELCONFIG_SHIFT) & CH_PIN_CHANNELCONFIG_MASK)
 
-#define CH_PIN_DEFINE(MODE, CNF, AFCONFIG) ((int)(MODE) |                                     \
+#define CH_PIN_DEFINE(MODE, CNF, AFCONFIG, PUPD) ((int)(MODE) |                                     \
                                               ((CNF & CH_PIN_CNF_MASK) << CH_PIN_CNF_SHIFT) | \
-                                              ((AFCONFIG & CH_PIN_AFCONFIG_MASK) << CH_PIN_AFCONFIG_SHIFT))
+                                              ((AFCONFIG & CH_PIN_AFCONFIG_MASK) << CH_PIN_AFCONFIG_SHIFT)| \
+                                              ((PUPD & CH_PIN_PUPD_MASK) << CH_PIN_PUPD_SHIFT))
 
-#define CH_PIN_DEFINE_EXT(MODE, CNF, AFCONFIG, CHANNELCONFIG)  \
+#define CH_PIN_DEFINE_EXT(MODE, CNF, AFCONFIG, PUPD, CHANNELCONFIG)  \
     ((int)(MODE) |                                        \
      ((CNF & CH_PIN_CNF_MASK) << CH_PIN_CNF_SHIFT) |    \
      ((AFCONFIG & CH_PIN_AFCONFIG_MASK) << CH_PIN_AFCONFIG_SHIFT) | \
+     ((PUPD & CH_PIN_PUPD_MASK) << CH_PIN_PUPD_SHIFT) | \
      ((CHANNELCONFIG & CH_PIN_CHANNELCONFIG_MASK) << CH_PIN_CHANNELCONFIG_SHIFT))
 
 
-#define CH_PIN_DATA(MODE, CNF, AFCONFIG) CH_PIN_DEFINE(MODE, CNF, AFCONFIG)
-#define CH_PIN_DATA_EXT(MODE, CNF, AFCONFIG, CHANNELCONFIG) \
-    CH_PIN_DEFINE_EXT(MODE, CNF, AFCONFIG, CHANNELCONFIG)
+#define CH_PIN_DATA(MODE, CNF, AFCONFIG, PUPD) CH_PIN_DEFINE(MODE, CNF, AFCONFIG, PUPD)
+#define CH_PIN_DATA_EXT(MODE, CNF, AFCONFIG, PUPD, CHANNELCONFIG) \
+    CH_PIN_DEFINE_EXT(MODE, CNF, AFCONFIG, PUPD, CHANNELCONFIG)
 
     typedef enum
     {
         CH_PIN_INPUT = 0x00,
         CH_PIN_OUTPUT = 0x03,
-        CH_PIN_ALTERNATEFUNC = 0x0B, 
-        CH_PIN_ANALOG = 0x00,
+        CH_PIN_ANALOG = 0x00
     } CHPinFunction;
 
-#define CH_MODE_INPUT (CH_PIN_INPUT | CH_PIN_FLOAT_BITS)
-#define CH_MODE_OUTPUT_PP (CH_PIN_OUTPUT)
-#define CH_MODE_OUTPUT_OD (CH_PIN_OUTPUT | CH_PIN_OD_BITS)
-#define CH_MODE_AF_PP (CH_PIN_ALTERNATEFUNC)
-#define CH_MODE_AF_OD (CH_PIN_ALTERNATEFUNC | CH_PIN_OD_BITS)
 #define CH_MODE_ANALOG (CH_PIN_ANALOG)
+#define CH_MODE_INPUT (CH_PIN_INPUT | GPIO_Mode_IN_FLOATING)
+#define CH_MODE_OUTPUT_PP (CH_PIN_OUTPUT | GPIO_Mode_Out_PP)
+#define CH_MODE_OUTPUT_OD (CH_PIN_OUTPUT | GPIO_Mode_Out_OD)
+#define CH_MODE_AF_PP (CH_PIN_OUTPUT | GPIO_Mode_AF_PP)
+#define CH_MODE_AF_OD (CH_PIN_OUTPUT | GPIO_Mode_AF_OD)
+
 
 // High nibble = port number (FirstPort <= PortName <= LastPort)
 // Low nibble  = pin number

@@ -27,12 +27,12 @@
 extern "C" {
 #endif
 
-extern const uint32_t pin_map_ll[16];
+extern const uint32_t pin_map[16];
 
 #ifndef GPIO_AF_NONE
 #define GPIO_AF_NONE 0
 #endif
-#define STM_LL_GPIO_PIN(X) (pin_map_ll[STM_PIN(X)])
+#define CH_GPIO_PIN(X) (pin_map[CH_PIN(X)])
 
 // No peripheral
 #define NP       0U
