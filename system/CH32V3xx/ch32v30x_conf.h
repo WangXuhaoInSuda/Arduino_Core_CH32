@@ -34,13 +34,13 @@
 #include "ch32v30x_it.h"
 #include "ch32v30x_misc.h"
 
-
+/*
 //for Pinmap 
 
 #define MODULE_ENABLED
 #define ADC_MODULE_ENABLED
 #define CAN_MODULE_ENABLED
-/*#define CAN_LEGACY_MODULE_ENABLED*/
+//#define CAN_LEGACY_MODULE_ENABLED
 #define COMP_MODULE_ENABLED
 #define CORTEX_MODULE_ENABLED
 #define CRC_MODULE_ENABLED
@@ -87,7 +87,7 @@
 #define UART_MODULE_ENABLED
 #define USART_MODULE_ENABLED
 #define WWDG_MODULE_ENABLED
-
+*/
 #endif /* __CH32V30x_CONF_H */
 
 
