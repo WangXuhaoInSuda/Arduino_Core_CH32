@@ -57,11 +57,11 @@ bool pin_in_pinmap(PinName pin, const PinMap *map)
 void pin_function(PinName pin, int function)
 {
   /* Get the pin informations */
-  uint32_t mode  = CH_PIN_MODE(function);
-  uint32_t afnum = CH_PIN_AFNUM(function);
+  uint32_t mode = CH_PIN_MODE(function);
+  uint32_t cnf  = CH_PIN_CNF(function);
   uint32_t port = CH_PORT(pin);
-  uint32_t pin  = CH_GPIO_PIN(pin);
-  uint32_t mode = 0;
+  uint32_t ch_pin  = CH_GPIO_PIN(pin);
+  uint32_t ch_mode = 0;
 
   if (pin == (PinName)NC) {
     Error_Handler();
@@ -75,32 +75,32 @@ void pin_function(PinName pin, int function)
    *  not so important, register can be set at any time.
    *  But for families like F1, speed only applies to output.
    */
-#if defined (STM32F1xx)
+#if defined (CH32V30x)
   if (mode == CH_PIN_OUTPUT) {
 #endif
 #ifdef GPIO_SPEED_FREQ_VERY_HIGH
-    GPIO_SetPinSpeed(gpio, pin, GPIO_SPEED_FREQ_VERY_HIGH);
+    GPIO_SetPinSpeed(gpio, ch_pin, GPIO_Speed_50MHz);
 #else
-    GPIO_SetPinSpeed(gpio, pin, GPIO_SPEED_FREQ_VERY_HIGH);
+    GPIO_SetPinSpeed(gpio, ch_pin, GPIO_Speed_50MHz);
 #endif
-#if defined (STM32F1xx)
+#if defined (CH32V30x)
   }
 #endif
 
   switch (mode) {
     case CH_PIN_INPUT:
-      mode = GPIO_MODE_INPUT;
+      ch_mode = GPIO_MODE_INPUT;
       break;
     case CH_PIN_OUTPUT:
-      mode = GPIO_MODE_OUTPUT;
+      ch_mode = GPIO_MODE_OUTPUT;
       break;
     case CH_PIN_ALTERNATE:
-      mode = GPIO_MODE_ALTERNATE;
+      ch_mode = GPIO_MODE_ALTERNATE;
       /* In case of ALT function, also set the afnum */
       pin_SetAFPin(gpio, pin, afnum);
       break;
     case CH_PIN_ANALOG:
-      mode = GPIO_MODE_ANALOG;
+      ch_mode = GPIO_MODE_ANALOG;
       break;
     default:
       Error_Handler();
