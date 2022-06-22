@@ -6,7 +6,7 @@ to be done : line 18-46
 #ifndef _CH32_DEF_
 #define _CH32_DEF_
 
-#if defined(CH32V3xx) 
+#ifdef CH32V3xx
 #include "ch32v30x.h"
 #else
 #error "Chip series is not defined in boards.txt."

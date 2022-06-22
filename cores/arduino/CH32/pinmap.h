@@ -32,7 +32,7 @@ extern const uint32_t pin_map[16];
 #ifndef GPIO_AF_NONE
 #define GPIO_AF_NONE 0
 #endif
-#define CH_GPIO_PIN(X) (pin_map[CH_PIN(X)])
+#define CH_MGPIO_PIN(X) (pin_map[CH_PIN(X)])
 
 // No peripheral
 #define NP       0U

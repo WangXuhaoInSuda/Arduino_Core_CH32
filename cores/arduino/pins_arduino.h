@@ -27,8 +27,7 @@
 #include "variant.h"
 #include "PinNames.h"
 #include "PortNames.h"
-#include "pins_arduino_analog.h"
-#include "pins_arduino_digital.h"
+#include "digital_io.h"
 
 
 /*

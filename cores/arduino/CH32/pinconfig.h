@@ -84,7 +84,7 @@ static inline void pin_SetAFPin(GPIO_TypeDef *gpio, PinName pin, uint32_t afnum)
 #ifdef CH32V3xx
   UNUSED(gpio);
   UNUSED(pin);
-  pin_SetF1AFPin(afnum);
+  pin_SetV3AFPin(afnum);
 #else
   uint32_t ll_pin  = CH_GPIO_PIN(pin);
 

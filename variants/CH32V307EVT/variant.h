@@ -46,7 +46,7 @@ extern "C"
 
 
 #define NUM_DIGITAL_PINS 80
-
+#define NUM_ANALOG_INPUTS 2
 // On-board pads
 #define PAD_MCO PA8
 #define PAD_PA1 PA1

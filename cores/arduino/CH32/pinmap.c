@@ -60,7 +60,7 @@ void pin_function(PinName pin, int function)
   uint32_t mode = CH_PIN_MODE(function);
   uint32_t cnf  = CH_PIN_CNF(function);
   uint32_t port = CH_PORT(pin);
-  uint32_t ch_pin  = CH_GPIO_PIN(pin);
+  uint32_t ch_pin  = CH_MGPIO_PIN(pin);
   uint32_t ch_mode = 0;
 
   if (pin == (PinName)NC) {
@@ -89,10 +89,10 @@ void pin_function(PinName pin, int function)
 
   switch (mode) {
     case CH_PIN_INPUT:
-      ch_mode = GPIO_MODE_INPUT;
+      ch_mode = CH_MODE_INPUT;
       break;
     case CH_PIN_OUTPUT:
-      ch_mode = GPIO_MODE_OUTPUT;
+      ch_mode = CH_MODE_OUTPUT;
       break;
     case CH_PIN_ALTERNATE:
       ch_mode = GPIO_MODE_ALTERNATE;

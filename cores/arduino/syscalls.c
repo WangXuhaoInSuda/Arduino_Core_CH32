@@ -10,7 +10,7 @@
   #include <sys/stat.h>
 #endif
 #include <errno.h>
-#include <sys/_types.h>
+#include <sys/types.h>
 #undef errno
 extern int errno;
 
@@ -35,7 +35,7 @@ caddr_t _sbrk( int incr ) {
   static char *heap_end = &_end ;
   char *prev_heap_end = heap_end;
 
-  if (heap_end + incr > (char *)__get_MSP()) {
+  if (heap_end + incr > (char *)__get_SP()) {
     /* Heap and stack collision */
     errno = ENOMEM;
     return (caddr_t) -1;

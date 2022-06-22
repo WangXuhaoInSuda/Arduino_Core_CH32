@@ -28,7 +28,7 @@
  *******************************************************************************
  */
 #include "PortNames.h"
-
+#include "ch32v30x_rcc.h"
 GPIO_TypeDef *GPIOPort[MAX_NB_PORT] = {
   (GPIO_TypeDef *)GPIOA_BASE,
   (GPIO_TypeDef *)GPIOB_BASE
@@ -68,34 +68,34 @@ GPIO_TypeDef *set_GPIO_Port_Clock(uint32_t port_idx)
   switch (port_idx) {
     case PortA:
       gpioPort = (GPIO_TypeDef *)GPIOA_BASE;
-      RCC_GPIOA_CLK_ENABLE();
+      RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA,ENABLE);
       break;
     case PortB:
       gpioPort = (GPIO_TypeDef *)GPIOB_BASE;
-      RCC_GPIOB_CLK_ENABLE();
+      RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
       break;
 #if defined GPIOC_BASE
     case PortC:
       gpioPort = (GPIO_TypeDef *)GPIOC_BASE;
-      RCC_GPIOC_CLK_ENABLE();
+      RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC,ENABLE);
       break;
 #endif
 #if defined GPIOD_BASE
     case PortD:
       gpioPort = (GPIO_TypeDef *)GPIOD_BASE;
-      RCC_GPIOD_CLK_ENABLE();
+      RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD,ENABLE);
       break;
 #endif
 #if defined GPIOE_BASE
     case PortE:
       gpioPort = (GPIO_TypeDef *)GPIOE_BASE;
-      RCC_GPIOE_CLK_ENABLE();
+      RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE,ENABLE);
       break;
 #endif
 #if defined GPIOF_BASE
     case PortF:
       gpioPort = (GPIO_TypeDef *)GPIOF_BASE;
-      RCC_GPIOF_CLK_ENABLE();
+      RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF,ENABLE);
       break;
 #endif
 #if defined GPIOG_BASE

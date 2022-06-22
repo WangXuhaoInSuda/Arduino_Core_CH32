@@ -183,6 +183,37 @@ void GPIO_PinRemapConfig(uint32_t GPIO_Remap, FunctionalState NewState);
 void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource);
 void GPIO_ETH_MediaInterfaceConfig(uint32_t GPIO_ETH_MediaInterface);
 
+//add contents
+/**
+  * @brief  Toggle data value for several pin of dedicated port.
+  * @rmtoll ODR          ODy           GPIO_TogglePin
+  * @param  GPIOx GPIO Port
+  * @param  GPIO_Pin This parameter can be a combination of the following values:
+  *         @arg @ref GPIO_Pin_0
+  *         @arg @ref GPIO_Pin_1
+  *         @arg @ref GPIO_Pin_2
+  *         @arg @ref GPIO_Pin_3
+  *         @arg @ref GPIO_Pin_4
+  *         @arg @ref GPIO_Pin_5
+  *         @arg @ref GPIO_Pin_6
+  *         @arg @ref GPIO_Pin_7
+  *         @arg @ref GPIO_Pin_8
+  *         @arg @ref GPIO_Pin_9
+  *         @arg @ref GPIO_Pin_10
+  *         @arg @ref GPIO_Pin_11
+  *         @arg @ref GPIO_Pin_12
+  *         @arg @ref GPIO_Pin_13
+  *         @arg @ref GPIO_Pin_14
+  *         @arg @ref GPIO_Pin_15
+  *         @arg @ref GPIO_Pin_ALL
+  * @retval None
+  */
+RV_STATIC_INLINE void GPIO_TogglePin(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin){
+  if(GPIOx->BSHR == GPIO_Pin) //if was setbits
+    GPIOx->BCR = GPIO_Pin;
+  else
+    GPIOx->BSHR = GPIO_Pin;
+}
 #ifdef __cplusplus
 }
 #endif

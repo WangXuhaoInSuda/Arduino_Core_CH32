@@ -34,6 +34,7 @@
 #include "WSerial.h"
 #include "clock.h"
 #include "pinmap.h"
+#include "pins_arduino.h"
 /* sketch */
 
 #ifdef __cplusplus

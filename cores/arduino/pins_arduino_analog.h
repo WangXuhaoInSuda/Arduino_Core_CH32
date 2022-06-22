@@ -32,9 +32,7 @@
 #define PNUM_ANALOG_INDEX   0x3F
 
 /* Arduino analog pins */
-#ifndef NUM_ANALOG_INPUTS
-  #define NUM_ANALOG_INPUTS 0
-#endif
+
 
 /* Analog internal pin numbers follow the analog pin number */
 #define NUM_ANALOG_INTERNAL_FIRST (PNUM_ANALOG_BASE + NUM_ANALOG_INPUTS)
