@@ -173,7 +173,7 @@ static const uint32_t SCL = PIN_WIRE_SCL;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+extern const PinName digitalPin[];
 #define NOT_AN_INTERRUPT            NC // -1
 
 // Convert a digital pin number Dxx to a PinName PX_n
@@ -186,7 +186,8 @@ uint32_t pinNametoDigitalPin(PinName p);
 // Used by analogRead api to have A0 == 0
 #define analogInputToDigitalPin(p)  (((uint32_t)p < NUM_ANALOG_INPUTS) ? (p+A0) : p)
 // Convert an analog pin number Axx to a PinName PX_n
-#define analogInputToPinName(p)     (digitalPinToPinName(analogInputToDigitalPin(p)))
+PinName analogInputToPinName(uint32_t pin);
+
 // All pins could manage EXTI
 #define digitalPinToInterrupt(p)    (digitalPinIsValid(p) ? p : NOT_AN_INTERRUPT)
 
@@ -201,15 +202,15 @@ uint32_t pinNametoDigitalPin(PinName p);
                                      pin_in_pinmap(digitalPinToPinName(p), PinMap_SPI_SSEL))
 
 
-#define digitalPinToPort(p)         (get_GPIO_Port(CH_PORT(digitalPinToPinName(p))))
-#define digitalPinToBitMask(p)      (CH_GPIO_PIN(digitalPinToPinName(p)))
+#define digitalPinToPort(p)         (get_GPIO_Port(STM_PORT(digitalPinToPinName(p))))
+#define digitalPinToBitMask(p)      (STM_GPIO_PIN(digitalPinToPinName(p)))
 
-#define analogInPinToBit(p)         (CH_PIN(digitalPinToPinName(p)))
+#define analogInPinToBit(p)         (STM_GPIO_PIN(digitalPinToPinName(p)))
 #define portOutputRegister(P)       (&(P->ODR))
 #define portInputRegister(P)        (&(P->IDR))
 
 #define portSetRegister(P)          (&(P->BSRR))
-#if defined(CH32F2xx) || defined(CH32F4xx) || defined(CH32F7xx)
+#if defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32F7xx)
 // For those series reset are in the high part so << 16U needed
 #define portClearRegister(P)        (&(P->BSRR))
 #else
@@ -217,15 +218,15 @@ uint32_t pinNametoDigitalPin(PinName p);
 #endif
 
 
-#if defined(CH32F1xx)
-// Config registers split in 2 registers:
-// CRL: pin 0..7
-// CRH: pin 8..15
-// Return only CRL
-#define portModeRegister(P)         (&(P->CRL))
-#else
+// #if defined(STM32F1xx)
+// // Config registers split in 2 registers:
+// // CRL: pin 0..7
+// // CRH: pin 8..15
+// // Return only CRL
+// #define portModeRegister(P)         (&(P->CRL))
+// #else
 #define portModeRegister(P)         (&(P->MODER))
-#endif
+// #endif
 #define portConfigRegister(P)       (portModeRegister(P))
 
 

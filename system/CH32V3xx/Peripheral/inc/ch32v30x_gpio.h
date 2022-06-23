@@ -27,14 +27,14 @@ typedef enum
 
 /* Configuration Mode enumeration */
 typedef enum
-{ GPIO_Mode_AIN = 0x0,
-  GPIO_Mode_IN_FLOATING = 0x04,
-  GPIO_Mode_IPD = 0x28,
-  GPIO_Mode_IPU = 0x48,
-  GPIO_Mode_Out_OD = 0x14,//0001 0100
-  GPIO_Mode_Out_PP = 0x10,//0001 0000
-  GPIO_Mode_AF_OD = 0x1C, //0001 1100
-  GPIO_Mode_AF_PP = 0x18  //0001 1000
+{ GPIO_Mode_AIN = 0x0,          //0000 0000
+  GPIO_Mode_IN_FLOATING = 0x04, //0000 0100
+  GPIO_Mode_IPD = 0x28,         //0010 1000
+  GPIO_Mode_IPU = 0x48,         //0100 1000
+  GPIO_Mode_Out_OD = 0x14,      //0001 0100
+  GPIO_Mode_Out_PP = 0x10,      //0001 0000
+  GPIO_Mode_AF_OD = 0x1C,       //0001 1100
+  GPIO_Mode_AF_PP = 0x18        //0001 1000
 }GPIOMode_TypeDef;
 
 /* GPIO Init structure definition */
@@ -214,6 +214,79 @@ RV_STATIC_INLINE void GPIO_TogglePin(GPIO_TypeDef *GPIOx, uint32_t GPIO_Pin){
   else
     GPIOx->BSHR = GPIO_Pin;
 }
+
+
+/**
+  * @brief  Return gpio mode for a dedicated pin on dedicated port.
+  * @note   I/O mode can be Input mode, General purpose output, Alternate function mode or Analog.
+  * @note   Warning: only one pin can be passed as parameter.
+  * @rmtoll MODER        MODEy         GPIO_GetPinMode
+  * @param  GPIOx GPIO Port
+  * @param  Pin This parameter can be one of the following values:
+  *         @arg @ref GPIO_Pin_0
+  *         @arg @ref GPIO_Pin_1
+  *         @arg @ref GPIO_Pin_2
+  *         @arg @ref GPIO_Pin_3
+  *         @arg @ref GPIO_Pin_4
+  *         @arg @ref GPIO_Pin_5
+  *         @arg @ref GPIO_Pin_6
+  *         @arg @ref GPIO_Pin_7
+  *         @arg @ref GPIO_Pin_8
+  *         @arg @ref GPIO_Pin_9
+  *         @arg @ref GPIO_Pin_10
+  *         @arg @ref GPIO_Pin_11
+  *         @arg @ref GPIO_Pin_12
+  *         @arg @ref GPIO_Pin_13
+  *         @arg @ref GPIO_Pin_14
+  *         @arg @ref GPIO_Pin_15
+  *         @arg @ref GPIO_Pin_ALL
+  * @retval Returned value can be one of the following values:
+  *         @arg @ref GPIO_Mode_AIN
+  *         @arg @ref GPIO_Mode_IN_FLOATING
+  *         @arg @ref GPIO_Mode_IPD
+  *         @arg @ref GPIO_Mode_IPU
+  *         @arg @ref GPIO_Mode_Out_OD
+  *         @arg @ref GPIO_Mode_Out_PP
+  *         @arg @ref GPIO_Mode_AF_OD
+  *         @arg @ref GPIO_Mode_AF_PP
+  * pd bcr pu bshr
+  */
+RV_STATIC_INLINE uint32_t GPIO_GetPinMode(GPIO_TypeDef * gpio, uint32_t Pin){
+  uint8_t MODEMASK = 0b1111;
+  uint8_t PinNum=-1;
+  uint8_t TempVal = 0;
+  uint8_t MODE=0,CNF=0,BCR=0,BSHR=0;
+  if(GPIO_Pin_0 <= Pin && Pin < GPIO_Pin_8){
+    //log2 
+    while (Pin >= 1)
+    {
+      PinNum++;
+      Pin/=2;
+    }
+    TempVal = gpio->CFGLR & (MODEMASK<< (PinNum<<2));//get[CNF MODE]
+    MODE = ((0b11 & TempVal) > 0 ? 1 : 0) << 4;
+    CNF = 0b1100 & TempVal;
+    BCR = ((gpio->BCR & Pin) > 0 ? 1 : 0) << 5;
+    BSHR = ((gpio->BSHR & Pin) > 0 ? 1 : 0) << 6;
+    TempVal = 0b00000000 & CNF & BCR & BSHR & MODE;
+
+  }else{
+
+  }
+
+typedef enum
+{ GPIO_Mode_AIN = 0x0,          //0000 0000
+  GPIO_Mode_IN_FLOATING = 0x04, //0000 0100
+  GPIO_Mode_IPD = 0x28,         //0010 1000
+  GPIO_Mode_IPU = 0x48,         //0100 1000
+  GPIO_Mode_Out_OD = 0x14,      //0001 0100
+  GPIO_Mode_Out_PP = 0x10,      //0001 0000
+  GPIO_Mode_AF_OD = 0x1C,       //0001 1100
+  GPIO_Mode_AF_PP = 0x18        //0001 1000
+}GPIOMode_TypeDef;
+
+}
+
 #ifdef __cplusplus
 }
 #endif

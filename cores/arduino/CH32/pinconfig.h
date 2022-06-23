@@ -37,13 +37,13 @@
 static inline void pin_DisconnectDebug(PinName pin)
 {
 #ifdef CH32V3xx
-  pinF1_DisconnectDebug(pin);
+  pinV3_DisconnectDebug(pin);
 #else
   UNUSED(pin);
 #endif /* CH32V3xx */
 }
 
-static inline void pin_PullConfig(GPIO_TypeDef *gpio, uint32_t ll_pin, uint32_t pull_config)
+static inline void pin_PullConfig(GPIO_TypeDef *gpio, uint32_t pin, uint32_t pull_config)
 {
 #ifdef CH32V3xx
   uint32_t function = GPIO_GetPinMode(gpio, pin);

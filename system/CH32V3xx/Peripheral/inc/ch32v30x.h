@@ -5237,9 +5237,9 @@ typedef struct
 #define  TICK_FREQ_1KHZ         1U
 #define  TICK_FREQ_DEFAULT      TICK_FREQ_1KHZ
 
-extern __IO uint32_t mTick;
-extern uint32_t mTickPrio;
-extern uint32_t mTickFreq;
+extern __IO uint64_t mTick;
+extern uint64_t mTickPrio;
+extern uint64_t mTickFreq;
 
 #ifdef __cplusplus
 }

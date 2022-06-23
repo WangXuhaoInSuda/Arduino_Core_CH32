@@ -25,7 +25,7 @@ extern "C" {
 WEAK uint32_t pinNametoDigitalPin(PinName p)
 {
   uint32_t i = NUM_DIGITAL_PINS;
-  if (STM_VALID_PINNAME(p)) {
+  if (CH_VALID_PINNAME(p)) {
     for (i = 0; i < NUM_DIGITAL_PINS; i++) {
       if (digitalPin[i] == p) {
         break;
@@ -35,11 +35,11 @@ WEAK uint32_t pinNametoDigitalPin(PinName p)
   return i;
 }
 
-PinName analogInputToPinName(uint32_t pin)
+PinName analogInputToPinName(uint32_t p)
 {
-  PinName pn = digitalPinToPinName(analogInputToDigitalPin(pin));
+  PinName pn = digitalPinToPinName(analogInputToDigitalPin(p));
   if (pn == NC) {
-    switch (pin) {
+    switch (p) {
 #ifdef ATEMP
       case ATEMP:
         pn = PADC_TEMP;
