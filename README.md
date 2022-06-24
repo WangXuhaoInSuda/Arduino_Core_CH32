@@ -1,3 +1,3 @@
 # Arduino_Core_CH32
-arduino_core support
-not finished
+test123
+arduino_core

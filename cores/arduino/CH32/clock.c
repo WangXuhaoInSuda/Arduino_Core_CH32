@@ -151,7 +151,7 @@ uint64_t getCurrentMicros(void)
   uint64_t m = GetTick();
   uint64_t u = SysTick->CMP - SysTick->CNT;
   if (SYSTICK_IsActiveCounterFlag()) {
-    m = HAL_GetTick();
+    m = GetTick();
     u = SysTick->CMP - SysTick->CNT;
   }
   return (m * 1000 + (u * 1000) / SysTick->CMP);

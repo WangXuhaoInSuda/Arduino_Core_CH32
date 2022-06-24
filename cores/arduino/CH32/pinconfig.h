@@ -42,58 +42,33 @@ static inline void pin_DisconnectDebug(PinName pin)
   UNUSED(pin);
 #endif /* CH32V3xx */
 }
-
+/*
+@param  pull_config This parameter can be one of the following values:
+  *         @arg @ref GPIO_PULL_NO
+  *         @arg @ref GPIO_PULL_UP
+  *         @arg @ref GPIO_PULL_DOWN
+*/
 static inline void pin_PullConfig(GPIO_TypeDef *gpio, uint32_t pin, uint32_t pull_config)
 {
-#ifdef CH32V3xx
-  uint32_t function = GPIO_GetPinMode(gpio, pin);
-#endif
-
   switch (pull_config) {
     case GPIO_PULLUP:
-#ifdef CH32V3xx
-      if (function == LL_GPIO_MODE_FLOATING) {
-        LL_GPIO_SetPinMode(gpio, ll_pin, LL_GPIO_MODE_INPUT);
-      }
-#endif
-      LL_GPIO_SetPinPull(gpio, ll_pin, LL_GPIO_PULL_UP);
+      GPIO_SetPinMode(gpio, pin, GPIO_Mode_IPU,GPIO_Speed_Current);
       break;
     case GPIO_PULLDOWN:
-#ifdef CH32V3xx
-      if (function == LL_GPIO_MODE_FLOATING) {
-        LL_GPIO_SetPinMode(gpio, ll_pin, LL_GPIO_MODE_INPUT);
-      }
-#endif
-      LL_GPIO_SetPinPull(gpio, ll_pin, LL_GPIO_PULL_DOWN);
+      GPIO_SetPinMode(gpio, pin, GPIO_Mode_IPD,GPIO_Speed_Current);
       break;
     default:
-#ifdef CH32V3xx
-      /*  Input+NoPull = Floating for F1 family */
-      if (function == LL_GPIO_MODE_INPUT) {
-        LL_GPIO_SetPinMode(gpio, ll_pin, LL_GPIO_MODE_FLOATING);
-      }
-#else
-      LL_GPIO_SetPinPull(gpio, ll_pin, LL_GPIO_PULL_NO);
-#endif
+      /*  Input+NoPull = Floating for V3 family */
+      GPIO_SetPinMode(gpio, pin, GPIO_Mode_IN_FLOATING,GPIO_Speed_Current);
       break;
   }
 }
 
 static inline void pin_SetAFPin(GPIO_TypeDef *gpio, PinName pin, uint32_t afnum)
 {
-#ifdef CH32V3xx
   UNUSED(gpio);
   UNUSED(pin);
   pin_SetV3AFPin(afnum);
-#else
-  uint32_t ll_pin  = CH_GPIO_PIN(pin);
-
-  if (CH_PIN(pin) > 7) {
-    GPIO_SetAFPin_8_15(gpio, pin, afnum);
-  } else {
-    GPIO_SetAFPin_0_7(gpio, pin, afnum);
-  }
-#endif
 }
 
 #endif

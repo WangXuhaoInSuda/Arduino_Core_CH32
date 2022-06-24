@@ -13,36 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//Based on mbed-os/hal/mbed_pinmap_common.c
+// Based on mbed-os/hal/mbed_pinmap_common.c
 #include "pinmap.h"
 #include "pinconfig.h"
 #include "ch32v30x_gpio.h"
 
 /* Map CH_PIN to LL */
 const uint32_t pin_map[16] = {
-  GPIO_Pin_0,
-  GPIO_Pin_1,
-  GPIO_Pin_2,
-  GPIO_Pin_3,
-  GPIO_Pin_4,
-  GPIO_Pin_5,
-  GPIO_Pin_6,
-  GPIO_Pin_7,
-  GPIO_Pin_8,
-  GPIO_Pin_9,
-  GPIO_Pin_10,
-  GPIO_Pin_11,
-  GPIO_Pin_12,
-  GPIO_Pin_13,
-  GPIO_Pin_14,
-  GPIO_Pin_15
-};
+    GPIO_Pin_0,
+    GPIO_Pin_1,
+    GPIO_Pin_2,
+    GPIO_Pin_3,
+    GPIO_Pin_4,
+    GPIO_Pin_5,
+    GPIO_Pin_6,
+    GPIO_Pin_7,
+    GPIO_Pin_8,
+    GPIO_Pin_9,
+    GPIO_Pin_10,
+    GPIO_Pin_11,
+    GPIO_Pin_12,
+    GPIO_Pin_13,
+    GPIO_Pin_14,
+    GPIO_Pin_15};
 
 bool pin_in_pinmap(PinName pin, const PinMap *map)
 {
-  if (pin != (PinName)NC) {
-    while (map->pin != NC) {
-      if (map->pin == pin) {
+  if (pin != (PinName)NC)
+  {
+    while (map->pin != NC)
+    {
+      if (map->pin == pin)
+      {
         return true;
       }
       map++;
@@ -57,13 +59,16 @@ bool pin_in_pinmap(PinName pin, const PinMap *map)
 void pin_function(PinName pin, int function)
 {
   /* Get the pin informations */
-  uint32_t mode = CH_PIN_MODE(function);
-  uint32_t cnf  = CH_PIN_CNF(function);
-  uint32_t port = CH_PORT(pin);
-  uint32_t ch_pin  = CH_MGPIO_PIN(pin);
-  uint32_t ch_mode = 0;
+  GPIO_InitTypeDef *GPIO_InitStructure;
+  uint8_t mode = CH_PIN_MODE(function);
+  uint8_t cnf = CH_PIN_CNF(function);
+  uint8_t port = CH_PORT(pin);
+  uint8_t pupd = CH_PIN_PUPD(function);
+  uint32_t ch_pin = CH_MGPIO_PIN(pin);
+  uint8_t ch_mode = 0;
 
-  if (pin == (PinName)NC) {
+  if (pin == (PinName)NC)
+  {
     Error_Handler();
   }
 
@@ -73,71 +78,71 @@ void pin_function(PinName pin, int function)
   /*  Set default speed to high.
    *  For most families there are dedicated registers so it is
    *  not so important, register can be set at any time.
-   *  But for families like F1, speed only applies to output.
+   *  speed only applies to output.
    */
-#if defined (CH32V30x)
-  if (mode == CH_PIN_OUTPUT) {
-#endif
-#ifdef GPIO_SPEED_FREQ_VERY_HIGH
-    GPIO_SetPinSpeed(gpio, ch_pin, GPIO_Speed_50MHz);
-#else
-    GPIO_SetPinSpeed(gpio, ch_pin, GPIO_Speed_50MHz);
-#endif
-#if defined (CH32V30x)
-  }
-#endif
 
-  switch (mode) {
-    case CH_PIN_INPUT:
-      ch_mode = CH_MODE_INPUT;
+  if (mode > 0)
+  {
+    GPIO_InitStructure->GPIO_Speed = GPIO_Speed_50MHz;
+    switch (cnf)
+    {
+    case GPIO_CNF_OUTPUT_PP:
+      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_Out_PP;
       break;
-    case CH_PIN_OUTPUT:
-      ch_mode = CH_MODE_OUTPUT;
+    case GPIO_CNF_OUTPUT_OD:
+      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_Out_OD;
       break;
-    case CH_PIN_ALTERNATE:
-      ch_mode = GPIO_MODE_ALTERNATE;
-      /* In case of ALT function, also set the afnum */
-      pin_SetAFPin(gpio, pin, afnum);
+    case GPIO_CNF_OUTPUT_AF_PP:
+      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_AF_PP;
       break;
-    case CH_PIN_ANALOG:
-      ch_mode = GPIO_MODE_ANALOG;
+    case GPIO_CNF_OUTPUT_AF_OD:
+      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_AF_OD;
       break;
     default:
-      Error_Handler();
+      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_Out_OD;
       break;
+    }
   }
-  GPIO_SetPinMode(gpio, pin, mode);
-
-#if defined(GPIO_ASCR_ASC0)
-  /* For families where Analog Control ASC0 register is present */
-  if (CH_PIN_ANALOG_CONTROL(function)) {
-    GPIO_EnablePinAnalogControl(gpio, pin);
-  } else {
-    GPIO_DisablePinAnalogControl(gpio, pin);
-  }
-#endif
-
-  if ((mode == CH_PIN_OUTPUT) || (mode == CH_PIN_ALTERNATE)) {
-    if (CH_PIN_OD(function)) {
-      GPIO_SetPinOutputType(gpio, pin, GPIO_OUTPUT_OPENDRAIN);
-    } else {
-      GPIO_SetPinOutputType(gpio, pin, GPIO_OUTPUT_PUSHPULL);
+  else
+  {
+    switch (cnf)
+    {
+    case GPIO_CNF_INPUT_ANALOG:
+      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_AIN;
+      break;
+    case GPIO_CNF_INPUT_FLOAT:
+      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IN_FLOATING;
+      break;
+    case GPIO_CNF_INPUT_PUPD:
+    {
+      if (pupd == 0b01)
+        GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IPD;
+      else
+        GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IPU;
+    }
+    break;
+    default:
+      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IN_FLOATING;
+      break;
     }
   }
 
-  pin_PullConfig(gpio, pin, CH_PIN_PUPD(function));
+  GPIO_SetPinMode(gpio, ch_pin, GPIO_InitStructure->GPIO_Mode, GPIO_InitStructure->GPIO_Speed);
 
   pin_DisconnectDebug(pin);
 }
 
 void pinmap_pinout(PinName pin, const PinMap *map)
 {
-  if (pin == NC) {
+  if (pin == NC)
+  {
     return;
   }
 
-  while (map->pin != NC) {
-    if (map->pin == pin) {
+  while (map->pin != NC)
+  {
+    if (map->pin == pin)
+    {
       pin_function(pin, map->function);
       return;
     }
@@ -148,8 +153,10 @@ void pinmap_pinout(PinName pin, const PinMap *map)
 
 void *pinmap_find_peripheral(PinName pin, const PinMap *map)
 {
-  while (map->pin != NC) {
-    if (map->pin == pin) {
+  while (map->pin != NC)
+  {
+    if (map->pin == pin)
+    {
       return map->peripheral;
     }
     map++;
@@ -161,7 +168,8 @@ void *pinmap_peripheral(PinName pin, const PinMap *map)
 {
   void *peripheral = NP;
 
-  if (pin != (PinName)NC) {
+  if (pin != (PinName)NC)
+  {
     peripheral = pinmap_find_peripheral(pin, map);
   }
   return peripheral;
@@ -169,8 +177,10 @@ void *pinmap_peripheral(PinName pin, const PinMap *map)
 
 PinName pinmap_find_pin(void *peripheral, const PinMap *map)
 {
-  while (map->peripheral != NP) {
-    if (map->peripheral == peripheral) {
+  while (map->peripheral != NP)
+  {
+    if (map->peripheral == peripheral)
+    {
       return map->pin;
     }
     map++;
@@ -182,7 +192,8 @@ PinName pinmap_pin(void *peripheral, const PinMap *map)
 {
   PinName pin = NC;
 
-  if (peripheral != NP) {
+  if (peripheral != NP)
+  {
     pin = pinmap_find_pin(peripheral, map);
   }
   return pin;
@@ -190,8 +201,10 @@ PinName pinmap_pin(void *peripheral, const PinMap *map)
 
 uint32_t pinmap_find_function(PinName pin, const PinMap *map)
 {
-  while (map->pin != NC) {
-    if (map->pin == pin) {
+  while (map->pin != NC)
+  {
+    if (map->pin == pin)
+    {
       return map->function;
     }
     map++;
@@ -203,7 +216,8 @@ uint32_t pinmap_function(PinName pin, const PinMap *map)
 {
   uint32_t function = (uint32_t)NC;
 
-  if (pin != (PinName)NC) {
+  if (pin != (PinName)NC)
+  {
     function = pinmap_find_function(pin, map);
   }
   return function;
@@ -213,15 +227,18 @@ uint32_t pinmap_function(PinName pin, const PinMap *map)
 void *pinmap_merge_peripheral(void *a, void *b)
 {
   // both are the same (inc both NP)
-  if (a == b) {
+  if (a == b)
+  {
     return a;
   }
 
   // one (or both) is not set
-  if (a == NP) {
+  if (a == NP)
+  {
     return b;
   }
-  if (b == NP) {
+  if (b == NP)
+  {
     return a;
   }
 

@@ -55,8 +55,6 @@ void hw_config_init(void)
   dwt_init();
 #endif
 
-  /* Initialize the HAL */
-  HAL_Init();
 
   /* Configure the system clock */
   SystemClock_Config();
