@@ -30,7 +30,7 @@
  */
 #include "Arduino.h"
 #include "PeripheralPins.h"
-
+#include "PinAF_CH32V3xx.h"
 /* =====
  * Note: Commented lines are alternative possibilities which are not used per default.
  *       If you change them, you will have to know what you do
@@ -159,13 +159,13 @@ const PinMap PinMap_PWM[] = {
 #endif
 
 //*** SERIAL ***
-
-#ifdef HAL_UART_MODULE_ENABLED
+#define UART_MODULE_ENABLED
+#ifdef UART_MODULE_ENABLED
 const PinMap PinMap_UART_TX[] = {
-  {PC_1,  LPUART1, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF8_LPUART1)},
-  {PA_2,  USART2,  STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF7_USART2)}, 
-  {PA_9,  USART1,  STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF7_USART1)},// STLink TX
-  {PC_4,  USART3,  STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, GPIO_AF7_USART3)},
+  {PA_9, ?USART1, CH_PIN_DATA_EXT(GPIO_MODE_OUTPUT_50Mhz, GPIO_CNF_OUTPUT_AF_PP, AFIO_NONE, 2, 0)},
+  {PB_6,  USART1, CH_PIN_DATA_EXT(GPIO_MODE_OUTPUT_50Mhz, GPIO_CNF_OUTPUT_AF_PP, AFIO_Remap_USART1_ENABLE, 2, 0)}, 
+  {PB_15, USART1, CH_PIN_DATA_EXT(GPIO_MODE_OUTPUT_50Mhz, GPIO_CNF_OUTPUT_AF_PP, AFIO_Remap_USART1_HighBit_ENABLE,2, 0)},// STLink TX
+  {PA_6,  USART1, CH_PIN_DATA_EXT(GPIO_MODE_OUTPUT_50Mhz, GPIO_CNF_OUTPUT_AF_PP, AFIO_Remap_USART1_Low_HighBit_ENABLE,2,0)},
   {NC,    NP,    0}
 };
 #endif

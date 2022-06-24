@@ -123,7 +123,8 @@ extern "C"
     AFIO_PartialRemap_USART8_DISABLE,  /* USART8 Partial Alternate Function mapping */
     AFIO_FullRemap_USART8_DISABLE,     /* USART8 Full Alternate Function mapping */
     AFIO_Remap_USART1_HighBit_DISABLE, /* USART1 Alternate Function mapping high bit */
-
+    AFIO_Remap_USART1_Low_HighBit_ENABLE, /* USART1 Alternate Function*/
+    AFIO_Remap_USART1_Low_HighBit_DISABLE,
   };
 
 static inline void pinV3_DisconnectDebug(PinName pin)
@@ -442,6 +443,14 @@ static inline void pinV3_DisconnectDebug(PinName pin)
       break;
     case AFIO_Remap_USART1_HighBit_DISABLE:
       GPIO_PinRemapConfig(GPIO_Remap_USART1_HighBit, DISABLE);
+      break;
+    case AFIO_Remap_USART1_Low_HighBit_ENABLE:
+      GPIO_PinRemapConfig(GPIO_Remap_USART1_HighBit, ENABLE);
+      GPIO_PinRemapConfig(GPIO_Remap_USART1, ENABLE);
+      break;
+    case AFIO_Remap_USART1_Low_HighBit_DISABLE:
+      GPIO_PinRemapConfig(GPIO_Remap_USART1_HighBit, DISABLE);
+      GPIO_PinRemapConfig(GPIO_Remap_USART1, DISABLE);
       break;
     default:
     case AFIO_NONE:
