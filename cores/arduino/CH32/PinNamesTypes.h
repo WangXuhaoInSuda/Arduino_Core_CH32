@@ -51,10 +51,9 @@ extern "C"
                 01£ºOD£»
                 10£ºAF_PP£»
                 11£ºAF_OD¡£
-     *   [4]  for AF config 0:AF OFF 1:AF ON
-     *   [6:5]  for PUPD config 01:pull down 10:pull up
-     *   [10:7]  Channel (Analog/Timer/USART specific)
-     *   [15:9]  Reserved
+     *   [5:4]  for PUPD config 01:pull down 10:pull up 00:no pull
+     *   [12:6]  for AF config , details at PinAF_CH32V3xx.h
+     *   [16:13]  Channel (Analog/Timer/USART specific)
      */
 
 #define CH_PIN_MODE_MASK 0x03
@@ -65,16 +64,18 @@ extern "C"
 #define CH_PIN_CNF_SHIFT 2
 #define CH_PIN_CNF_BITS (CH_PIN_CNF_MASK << CH_PIN_CNF_SHIFT)
 
-#define CH_PIN_AFCONFIG_MASK 0x01
-#define CH_PIN_AFCONFIG_SHIFT 4
-#define CH_PIN_AFCONFIG_BITS (CH_PIN_AFCONFIG_MASK << CH_PIN_AFCONFIG_SHIFT)
-
 #define CH_PIN_PUPD_MASK 0x03
-#define CH_PIN_PUPD_SHIFT 5
+#define CH_PIN_PUPD_SHIFT 4
 #define CH_PIN_PUPD_BITS (CH_PIN_PUPD_MASK << CH_PIN_PUPD_SHIFT)
 
+
+#define CH_PIN_AFCONFIG_MASK 0x7f
+#define CH_PIN_AFCONFIG_SHIFT 6
+#define CH_PIN_AFCONFIG_BITS (CH_PIN_AFCONFIG_MASK << CH_PIN_AFCONFIG_SHIFT)
+
+
 #define CH_PIN_CHANNELCONFIG_MASK 0x0F
-#define CH_PIN_CHANNELCONFIG_SHIFT 7
+#define CH_PIN_CHANNELCONFIG_SHIFT 13
 #define CH_PIN_CHANNELCONFIG_BITS (CH_PIN_CHANNELCONFIG_MASK << CH_PIN_CHANNELCONFIG_SHIFT)
 
 #define CH_PIN_OD_MASK 0x01
