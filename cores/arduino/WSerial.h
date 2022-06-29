@@ -1,42 +1,9 @@
 #ifndef WIRING_SERIAL_H
 #define WIRING_SERIAL_H
 
+#include "PinNames.h"
 #include "variant.h"
 #include "HardwareSerial.h"
-#include "USBSerial.h"
-#include "VirtIOSerial.h"
-
-#if defined (USBCON) && defined(USBD_USE_CDC)
-  #ifndef DISABLE_GENERIC_SERIALUSB
-    #define ENABLE_SERIALUSB
-    #if !defined(Serial)
-      #define Serial SerialUSB
-      #define serialEvent serialEventUSB
-    #endif
-  #endif
-
-  #if defined(ENABLE_SERIALUSB)
-    #define HAVE_SERIALUSB
-  #endif
-
-  extern void serialEventUSB(void) __attribute__((weak));
-#endif /* USBCON && USBD_USE_CDC */
-
-#if defined(VIRTIOCON)
-  #ifndef DISABLE_GENERIC_SERIALVIRTIO
-    #define ENABLE_SERIALVIRTIO
-    #if !defined(Serial)
-      #define Serial SerialVirtIO
-      #define serialEvent serialEventVirtIO
-    #endif
-  #endif
-
-  #if defined(ENABLE_SERIALVIRTIO)
-    #define HAVE_SERIALVIRTIO
-  #endif
-
-  extern void serialEventVirtIO(void) __attribute__((weak));
-#endif /* VIRTIOCON */
 
 #if defined(HAL_UART_MODULE_ENABLED) && !defined(HAL_UART_MODULE_ONLY)
   #if !defined(HWSERIAL_NONE) && defined(SERIAL_UART_INSTANCE)

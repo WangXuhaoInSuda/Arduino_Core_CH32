@@ -24,12 +24,14 @@
 // Include board variant
 #include <stdint.h>
 #include <stdlib.h> /* Required for static_assert */
-#include "variant.h"
 #include "PinNames.h"
-#include "PortNames.h"
-#include "digital_io.h"
+#include "variant.h"
 
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*
  * Pin number mask
  * allows to retrieve the pin number without ALTx
@@ -170,9 +172,7 @@ static const uint32_t SCK  = PIN_SPI_SCK;
 static const uint32_t SDA = PIN_WIRE_SDA;
 static const uint32_t SCL = PIN_WIRE_SCL;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 extern const PinName digitalPin[];
 #define NOT_AN_INTERRUPT            NC // -1
 
@@ -202,20 +202,16 @@ PinName analogInputToPinName(uint32_t pin);
                                      pin_in_pinmap(digitalPinToPinName(p), PinMap_SPI_SSEL))
 
 
-#define digitalPinToPort(p)         (get_GPIO_Port(STM_PORT(digitalPinToPinName(p))))
-#define digitalPinToBitMask(p)      (STM_GPIO_PIN(digitalPinToPinName(p)))
+#define digitalPinToPort(p)         (get_GPIO_Port(CH_PORT(digitalPinToPinName(p))))
+#define digitalPinToBitMask(p)      (CH_GPIO_PIN(digitalPinToPinName(p)))
 
-#define analogInPinToBit(p)         (STM_GPIO_PIN(digitalPinToPinName(p)))
-#define portOutputRegister(P)       (&(P->ODR))
-#define portInputRegister(P)        (&(P->IDR))
+#define analogInPinToBit(p)         (CH_GPIO_PIN(digitalPinToPinName(p)))
+#define portOutputRegister(P)       (&(P->OUTDR))
+#define portInputRegister(P)        (&(P->INDR))
 
-#define portSetRegister(P)          (&(P->BSRR))
-#if defined(STM32F2xx) || defined(STM32F4xx) || defined(STM32F7xx)
-// For those series reset are in the high part so << 16U needed
-#define portClearRegister(P)        (&(P->BSRR))
-#else
-#define portClearRegister(P)        (&(P->BRR))
-#endif
+#define portSetRegister(P)          (&(P->BSHR))
+#define portClearRegister(P)        (&(P->BCR))
+
 
 
 // #if defined(STM32F1xx)
@@ -232,6 +228,8 @@ PinName analogInputToPinName(uint32_t pin);
 
 #define digitalPinIsValid(p)        (digitalPinToPinName(p) != NC)
 
+
+
 // As some pin could be duplicated in digitalPin[]
 // return first occurence of linked PinName (PYx)
 #define digitalPinFirstOccurence(p) (pinNametoDigitalPin(digitalPinToPinName(p)))
@@ -241,10 +239,6 @@ PinName analogInputToPinName(uint32_t pin);
 #if defined(PIN_SERIAL_RX) && defined(PIN_SERIAL_TX)
 #define pinIsSerial(p)              ((digitalPinFirstOccurence(p) == PIN_SERIAL_RX) ||\
                                      (digitalPinFirstOccurence(p) == PIN_SERIAL_TX))
-#endif
-
-#ifdef __cplusplus
-}
 #endif
 
 // Default Definitions, could be redefined in variant.h
@@ -263,5 +257,11 @@ PinName analogInputToPinName(uint32_t pin);
 #ifndef PWM_MAX_DUTY_CYCLE
 #define PWM_MAX_DUTY_CYCLE          255
 #endif
+
+#ifdef __cplusplus
+}
+#endif
+
+
 
 #endif /*_PINS_ARDUINO_H_*/

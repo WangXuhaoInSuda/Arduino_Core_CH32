@@ -20,16 +20,16 @@
 #define _WIRING_INTERRUPTS_
 
 #include <stdint.h>
-
+#include "Arduino.h"
 #ifdef __cplusplus
 #include <functional>
 
 typedef std::function<void(void)> callback_function_t;
-void attachInterrupt(uint32_t pin, callback_function_t callback, uint32_t mode);
+void attachInterrupt(uint32_t pin, callback_function_t callback, EXTIMode_TypeDef mode,EXTITrigger_TypeDef trigger);
 
 #endif
 
-void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode);
+void attachInterrupt(uint32_t pin, void (*callback)(void), EXTIMode_TypeDef mode,EXTITrigger_TypeDef trigger);
 
 void detachInterrupt(uint32_t pin);
 

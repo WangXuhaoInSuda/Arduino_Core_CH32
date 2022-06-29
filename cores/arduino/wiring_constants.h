@@ -68,9 +68,9 @@ enum BitOrder {
 
 //      LOW 0
 //      HIGH 1
-#define CHANGE 2
-#define FALLING 3
-#define RISING 4
+#define CHANGE 0x10
+#define FALLING 0x0C
+#define RISING 0x08
 
 #define DEFAULT 1
 #define EXTERNAL 0

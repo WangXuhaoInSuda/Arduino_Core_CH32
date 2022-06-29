@@ -34,6 +34,10 @@
 #include "PinAF_CH32V3xx.h"
 #include "ch32v30x_gpio.h"
 
+#ifdef __cplusplus
+extern "C" {
+
+#endif
 static inline void pin_DisconnectDebug(PinName pin)
 {
 #ifdef CH32V3xx
@@ -70,5 +74,8 @@ static inline void pin_SetAFPin(GPIO_TypeDef *gpio, PinName pin, uint32_t afnum)
   UNUSED(pin);
   pin_SetV3AFPin(afnum);
 }
+#ifdef __cplusplus
+}
 
+#endif
 #endif

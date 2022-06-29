@@ -31,9 +31,59 @@
  *        Headers
  *----------------------------------------------------------------------------*/
 
-#include "pins_arduino.h"
-#include "ch32v30x_conf.h"
-#include "PinNames.h"
+//for Pinmap 
+/*
+#define MODULE_ENABLED
+#define ADC_MODULE_ENABLED
+#define CAN_MODULE_ENABLED
+#define CAN_LEGACY_MODULE_ENABLED
+#define COMP_MODULE_ENABLED
+#define CORTEX_MODULE_ENABLED
+#define CRC_MODULE_ENABLED
+#define CRYP_MODULE_ENABLED
+#define DAC_MODULE_ENABLED
+#define DCMI_MODULE_ENABLED
+#define DFSDM_MODULE_ENABLED
+#define DMA_MODULE_ENABLED
+#define DMA2D_MODULE_ENABLED
+#define DSI_MODULE_ENABLED
+#define EXTI_MODULE_ENABLED
+#define FIREWALL_MODULE_ENABLED
+#define FLASH_MODULE_ENABLED
+#define GFXMMU_MODULE_ENABLED
+#define GPIO_MODULE_ENABLED
+#define HASH_MODULE_ENABLED
+#define HCD_MODULE_ENABLED
+#define I2C_MODULE_ENABLED
+#define IRDA_MODULE_ENABLED
+#define IWDG_MODULE_ENABLED
+#define LCD_MODULE_ENABLED
+#define LPTIM_MODULE_ENABLED
+#define LTDC_MODULE_ENABLED
+#define MMC_MODULE_ENABLED
+#define NAND_MODULE_ENABLED
+#define NOR_MODULE_ENABLED
+#define OPAMP_MODULE_ENABLED
+#define OSPI_MODULE_ENABLED
+#define PCD_MODULE_ENABLED
+#define PWR_MODULE_ENABLED
+#define QSPI_MODULE_ENABLED
+#define RCC_MODULE_ENABLED
+#define RNG_MODULE_ENABLED
+#define RTC_MODULE_ENABLED
+#define SAI_MODULE_ENABLED
+#define SD_MODULE_ENABLED
+#define SMARTCARD_MODULE_ENABLED
+#define SMBUS_MODULE_ENABLED
+#define SPI_MODULE_ENABLED
+#define SRAM_MODULE_ENABLED
+#define SWPMI_MODULE_ENABLED
+#define TIM_MODULE_ENABLED
+#define TSC_MODULE_ENABLED
+#define UART_MODULE_ENABLED
+#define USART_MODULE_ENABLED
+#define WWDG_MODULE_ENABLED
+*/
 #ifdef __cplusplus
 extern "C"
 {
@@ -44,7 +94,8 @@ extern "C"
    *----------------------------------------------------------------------------*/
   extern const PinName digitalPin[];
 
-
+__attribute__((weak)) void SystemClock_Config(void);
+#define CH32V30x_D8C
 #define NUM_DIGITAL_PINS 80
 #define NUM_ANALOG_INPUTS 2
 #define NUM_ANALOG_FIRST 10 //temp val

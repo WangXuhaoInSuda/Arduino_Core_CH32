@@ -1,4 +1,3 @@
-
 #ifndef _PINAF_CH32V3xx_H
 #define _PINAF_CH32V3xx_H
 

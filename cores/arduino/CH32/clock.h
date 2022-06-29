@@ -64,7 +64,8 @@ typedef enum {
 uint64_t getCurrentMillis(void);
 uint64_t getCurrentMicros(void);
 uint32_t SYSTICK_IsActiveCounterFlag(void);
-void SysTick_Handler(void)  __attribute__((interrupt()));
+void SysTick_Handler(void);
+
 WEAK void IncTick(void);
 WEAK uint64_t GetTick(void);
 WEAK uint64_t GetTickPrio(void);

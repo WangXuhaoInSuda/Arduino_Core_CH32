@@ -40,12 +40,13 @@
 #define __ANALOG_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "ch32_def.h"
-#include "PeripheralPins.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "ch32_def.h"
+#include "PeripheralPins.h"
 
 /* Exported functions ------------------------------------------------------- */
 void dac_write_value(PinName pin, uint32_t value, uint8_t do_init);

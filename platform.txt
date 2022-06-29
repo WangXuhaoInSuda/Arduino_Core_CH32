@@ -9,7 +9,7 @@ version=1.0.0
 
 # Compile variables
 # ----------------------
-compiler.ch.extra_include="-I{build.source.path}" "-I{build.core.path}" "-I{build.core.path}/avr/" "-I{build.core.path}/CH32/" "-I{build.system.path}/{build.series}" "-I{build.system.path}/{build.series}/Core" "-I{build.system.path}/{build.series}/Debug" "-I{build.system.path}/{build.series}/Peripheral/inc" "-I{build.system.path}/{build.series}/Peripheral/src" "-I{build.system.path}/{build.series}/Startup"
+compiler.ch.extra_include="-I{build.source.path}" "-I{build.core.path}" "-I{build.core.path}/avr/" "-I{build.core.path}/CH32/" "-I{build.core.path}/CH32/LIB" "-I{build.system.path}/{build.series}" "-I{build.system.path}/{build.series}/Core" "-I{build.system.path}/{build.series}/Debug" "-I{build.system.path}/{build.series}/Peripheral/inc" "-I{build.system.path}/{build.series}/Peripheral/src" "-I{build.system.path}/{build.series}/Startup"
 
 compiler.warning_flags=-w
 compiler.warning_flags.none=-w
@@ -19,40 +19,40 @@ compiler.warning_flags.all=-Wall -Wextra
 
 compiler.path={runtime.tools.mingw32-5.1.6.path}/bin/
 
-compiler.S.cmd=armv7-w64-mingw32uwp-g++
-compiler.c.cmd=armv7-w64-mingw32uwp-g++
-compiler.cpp.cmd=armv7-w64-mingw32uwp-g++
-compiler.ar.cmd=armv7-w64-mingw32uwp-ar
-compiler.c.elf.cmd=armv7-w64-mingw32uwp-g++
-compiler.objcopy.cmd=armv7-w64-mingw32uwp-objcopy
-compiler.elf2hex.cmd=armv7-w64-mingw32uwp-objcopy
+compiler.S.cmd=riscv-none-embed-gcc
+compiler.c.cmd=riscv-none-embed-gcc
+compiler.cpp.cmd=riscv-none-embed-g++
+compiler.ar.cmd=riscv-none-embed-ar
+compiler.c.elf.cmd=riscv-none-embed-g++
+compiler.objcopy.cmd=riscv-none-embed-objcopy
+compiler.elf2hex.cmd=riscv-none-embed-objcopy
 compiler.libraries.ldflags=
 
-compiler.extra_flags=-mcpu={build.mcu} {build.flags.fp}  -mthumb "@{build.opt.path}"
+compiler.extra_flags=   "@{build.opt.path}" -march=rv32imac -mabi=ilp32 -msmall-data-limit=8 -mno-save-restore -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -g
 
-compiler.S.flags={compiler.extra_flags} -c -x assembler-with-cpp {compiler.ch.extra_include}
+compiler.S.flags={compiler.extra_flags}  -x assembler -g "-I{build.system.path}/{build.series}/Startup/" "-I{build.core.path}/CH32/"
 
 compiler.c.flags={compiler.extra_flags} -c {build.flags.optimize} {build.flags.debug} {compiler.warning_flags}  -ffunction-sections -fdata-sections -Wdeprecated -MMD {compiler.ch.extra_include}
 
-compiler.cpp.flags={compiler.extra_flags} -c {build.flags.optimize} {build.flags.debug} {compiler.warning_flags} -std={compiler.cpp.std} -ffunction-sections  -Wdeprecated -fdata-sections -fno-threadsafe-statics --param max-inline-insns-single=500 -fno-rtti -fno-exceptions -fno-use-cxa-atexit -MMD {compiler.ch.extra_include}
+compiler.cpp.flags={compiler.extra_flags} -c {build.flags.optimize} {build.flags.debug} {compiler.warning_flags} -std={compiler.cpp.std} -ffunction-sections  -Wdeprecated -fdata-sections -fno-threadsafe-statics  -fno-rtti -fno-exceptions -fno-use-cxa-atexit -MMD {compiler.ch.extra_include}
 
 compiler.ar.flags=rcs
 
-compiler.c.elf.flags=-mcpu={build.mcu} {build.flags.fp} -mthumb {build.flags.optimize} {build.flags.debug} {build.flags.ldspecs} -Wl,--defsym=LD_FLASH_OFFSET={build.flash_offset} -Wl,--defsym=LD_MAX_SIZE={upload.maximum_size} -Wl,--defsym=LD_MAX_DATA_SIZE={upload.maximum_data_size} -Wl,--cref -Wl,--check-sections -Wl,--gc-sections -Wl,--entry=Reset_Handler -Wl,--unresolved-symbols=report-all -Wl,--warn-common
+compiler.c.elf.flags= 
 
 compiler.objcopy.eep.flags=-O ihex -j .eeprom --set-section-flags=.eeprom=alloc,load --no-change-warnings --change-section-lma .eeprom=0
 
 compiler.elf2bin.flags=-O binary
 compiler.elf2hex.flags=-O ihex
 
-ompiler.ldflags=
-compiler.size.cmd=arm-none-eabi-size
+compiler.ldflags=
+compiler.size.cmd=riscv-none-embed-size
 compiler.define=-DARDUINO=
 
 # These can be overridden in boards.txt
 build.extra_flags=
 build.bootloader_flags=
-build.ldscript=ldscript.ld
+build.ldscript=Link.ld
 build.variant_h=variant.h
 
 # These can be overridden in platform.local.txt
@@ -65,8 +65,8 @@ compiler.ar.extra_flags=
 compiler.elf2bin.extra_flags=
 compiler.elf2hex.extra_flags=
 
+
 compiler.arm.cmsis.c.flags="-I{build.system.path}/{build.series}/Core/"  "-I{build.system.path}/{build.series}/Peripheral/inc/" "-I{build.system.path}/{build.series}/" "-I{build.system.path}/{build.series}/Startup/"  "-I{build.system.path}/{build.series}/Debug/"  
-compiler.arm.cmsis.ldflags="-L{build.variant.path}/{build.series}/"
 
 # USB Flags
 # ---------
@@ -91,36 +91,36 @@ build.startup_file=
 build.flags.fp=
 build.flags.optimize=-Os
 build.flags.debug=
-build.flags.ldspecs=--specs=nano.specs
+build.flags.ldspecs=
 build.flash_offset=0
 
 # Pre and post build hooks
-build.opt.name=build.opt
+build.opt.name=build_opt.h
+build.opt.sourcepath={build.source.path}/{build.opt.name}
 build.opt.path={build.path}/sketch/{build.opt.name}
 
-extras.path={build.system.path}/extras
-
-# Create empty {build.opt} if not exists in the output sketch dir and force include of SrcWrapper library
-recipe.hooks.prebuild.1.pattern="{extras.path}/prebuild.sh" "{build.path}" "{build.source.path}"
-recipe.hooks.prebuild.1.pattern.windows="{runtime.tools.mingw32-5.1.6.path}/bin/busybox.exe" sh "{extras.path}/prebuild.sh" "{build.path}" "{build.source.path}"
+# Create empty {build.opt} if not exists in the sketch dir
+recipe.hooks.prebuild.1.pattern.windows=cmd /c if not exist "{build.opt.sourcepath}" mkdir "{build.path}\sketch" & type NUL > "{build.opt.path}"
+recipe.hooks.prebuild.1.pattern.linux=bash -c "[ -f {build.opt.sourcepath} ] || (mkdir -p {build.path}/sketch && touch {build.opt.path})"
+recipe.hooks.prebuild.1.pattern.macosx=bash -c "[ -f {build.opt.sourcepath} ] || (mkdir -p {build.path}/sketch && touch {build.opt.path})"
 
 # compile patterns
 # ---------------------
 
 ## Compile c files
-recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} {build.info.flags} {compiler.c.extra_flags} {build.extra_flags} {compiler.arm.cmsis.c.flags} {includes} "{source_file}" -o "{object_file}"
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} {build.info.flags} {compiler.c.extra_flags} {build.extra_flags} {compiler.arm.cmsis.c.flags} {includes}  -c -o "{object_file}" "{source_file}"  
 
 ## Compile c++ files
-recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {build.info.flags} {compiler.cpp.extra_flags} {build.extra_flags} {compiler.arm.cmsis.c.flags} {includes} "{source_file}" -o "{object_file}"
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} {build.info.flags} {compiler.cpp.extra_flags} {build.extra_flags} {compiler.arm.cmsis.c.flags} {includes} -c -o "{object_file}" "{source_file}"  
 
 ## Compile S files
-recipe.S.o.pattern="{compiler.path}{compiler.S.cmd}" {compiler.S.flags} {build.info.flags} {compiler.S.extra_flags} {build.extra_flags} {compiler.arm.cmsis.c.flags} {includes} "{source_file}" -o "{object_file}"
+recipe.S.o.pattern="{compiler.path}{compiler.S.cmd}" {compiler.S.flags} -o "{object_file}" -c "{source_file}"
 
 ## Create archives
 recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compiler.ar.extra_flags} "{archive_file_path}" "{object_file}"
 
 ## Combine gc-sections, archives, and objects
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} "-Wl,--default-script={build.variant.path}/{build.ldscript}" "-Wl,-Map,{build.path}/{build.project_name}.map" {compiler.c.elf.extra_flags} {compiler.ldflags} {compiler.arm.cmsis.ldflags} -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -Wl,--start-group {object_files} {compiler.libraries.ldflags} "{archive_file_path}" -lc -Wl,--end-group -lm -lgcc -lstdc++
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" {compiler.c.elf.flags} "-Wl,--script={build.variant.path}/{build.ldscript}" -nostartfiles -Xlinker --gc-sections  -Wl,--entry=_start -Wl,--cref "-Wl,-Map,{build.path}/{build.project_name}.map" --specs=nano.specs --specs=nosys.specs  -o "{build.path}/{build.project_name}.elf" "-L{build.path}" -Wl,--start-group {object_files}  -Wl,--whole-archive "{archive_file_path}" -Wl,--no-whole-archive -lc -Wl,--end-group -lm -lgcc -lstdc++
 
 ## Create output (.bin file)
 recipe.objcopy.bin.pattern="{compiler.path}{compiler.objcopy.cmd}" {compiler.elf2bin.flags} {compiler.elf2bin.extra_flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.bin"

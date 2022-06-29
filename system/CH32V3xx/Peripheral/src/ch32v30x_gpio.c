@@ -564,3 +564,34 @@ void GPIO_ETH_MediaInterfaceConfig(uint32_t GPIO_ETH_MediaInterface)
         AFIO->PCFR1 &= ~(1 << 23);
     }
 }
+///////////add content//////////
+
+/**
+  * @brief  Handle EXTI interrupt request.
+  * @param  GPIO_Pin Specifies the port pin connected to corresponding EXTI line.
+  * @retval None
+  */
+void GPIO_EXTI_IRQHandler(uint16_t GPIO_Pin)
+{
+  /* EXTI line interrupt detected */
+  if(__GPIO_EXTI_GET_IT(GPIO_Pin) != 0x00u)
+  {
+    __GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+    _GPIO_EXTI_Callback(GPIO_Pin);
+  }
+}
+
+/**
+  * @brief  EXTI line detection callback.
+  * @param  GPIO_Pin: Specifies the port pin connected to corresponding EXTI line.
+  * @retval None
+  */
+__attribute__((weak)) void GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(GPIO_Pin);
+
+  /* NOTE: This function should not be modified, when the callback is needed,
+           the GPIO_EXTI_Callback could be implemented in the user file
+   */
+}

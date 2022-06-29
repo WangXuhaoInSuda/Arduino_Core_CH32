@@ -19,51 +19,31 @@
 #include "WInterrupts.h"
 #include "Arduino.h"
 
-#include "PinAF_STM32F1.h"
+#include "PinAF_CH32V3xx.h"
 #include "interrupt.h"
 
-void attachInterrupt(uint32_t pin, callback_function_t callback, uint32_t mode){
-  uint32_t it_mode;
+void attachInterrupt(uint32_t pin,GPIOMode_TypeDef io_mode, callback_function_t callback, EXTIMode_TypeDef it_mode,EXTITrigger_TypeDef trigger){
   PinName p = digitalPinToPinName(pin);
-  GPIO_TypeDef* port = set_GPIO_Port_Clock(STM_PORT(p));
+  GPIO_TypeDef* port = set_GPIO_Port_Clock(CH_PORT(p));
   if (!port)
 	  return;
 
-  switch(mode) {
-    case CHANGE :
-      it_mode = GPIO_MODE_IT_RISING_FALLING;
-    break;
-    case FALLING :
-    case LOW :
-      it_mode = GPIO_MODE_IT_FALLING;
-    break;
-    case RISING :
-    case HIGH :
-      it_mode = GPIO_MODE_IT_RISING;
-    break;
-    default:
-      it_mode = GPIO_MODE_IT_RISING;
-    break;
-  }
+  pinV3_DisconnectDebug(p);
 
-#ifdef STM32F1xx
-  pinF1_DisconnectDebug(p);
-#endif /* STM32F1xx */
-
-  stm32_interrupt_enable(port, STM_GPIO_PIN(p), callback, it_mode);
+  ch32_interrupt_enable(port, io_mode,CH_GPIO_PIN(p), callback, it_mode,trigger);
 }
 
-void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode)
+void attachInterrupt(uint32_t pin,GPIOMode_TypeDef io_mode, void (*callback)(void), EXTIMode_TypeDef mode,EXTITrigger_TypeDef trigger)
 {
   callback_function_t _c = callback;
-  attachInterrupt(pin,_c,mode);
+  attachInterrupt(pin,io_mode,_c,mode,trigger);
 }
 
 void detachInterrupt(uint32_t pin)
 {
   PinName p = digitalPinToPinName(pin);
-  GPIO_TypeDef* port = get_GPIO_Port(STM_PORT(p));
+  GPIO_TypeDef* port = get_GPIO_Port(CH_PORT(p));
   if (!port)
 	  return;
-  stm32_interrupt_disable(port, STM_GPIO_PIN(p));
+  ch32_interrupt_disable(port, CH_GPIO_PIN(p));
 }

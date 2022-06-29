@@ -6,6 +6,10 @@ to be done : line 18-46
 #ifndef _CH32_DEF_
 #define _CH32_DEF_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef CH32V3xx
 #include "ch32v30x.h"
 #else
@@ -28,9 +32,7 @@ to be done : line 18-46
 #define WEAK __attribute__ ((weak))
 #endif
 
-#ifdef __cplusplus
-extern "C"{
-#endif // __cplusplus
+
 
 // weaked functions declaration
 void SystemClock_Config(void);
@@ -39,8 +41,11 @@ void _Error_Handler(const char *, int);
 
 #define Error_Handler() _Error_Handler(__FILE__, __LINE__)
 
+
+
 #ifdef __cplusplus
-} // extern "C"
-#endif // __cplusplus
+}
+#endif
+
 
 #endif //_CH32_DEF_

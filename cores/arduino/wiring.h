@@ -29,7 +29,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <math.h>
-
+#include "board.h"
 #include "itoa.h"
 #include "utils.h"
 
@@ -38,8 +38,9 @@
 #include "wiring_digital.h"
 #include "wiring_pulse.h"
 #include "wiring_shift.h"
+#include "wiring_time.h"
 #include "WInterrupts.h"
-
+#include "WSerial.h"
 
 #ifdef __cplusplus
 

@@ -18,22 +18,24 @@ menu.upload_method=Upload method
 
 CH32V307EVT.name=CH32v307EVT series
 CH32V307EVT.build.board=CH32V307EVT
-CH32V307EVT.build.mcu=cortex-m3
+CH32V307EVT.build.mcu=rv32imac
 CH32V307EVT.build.series=CH32V3xx
 CH32V307EVT.extra_flags=
 
 #CH32V307EVT-green
 CH32V307EVT.menu.pnum.CH32v307EVT_G=CH32v307EVT green
-CH32V307EVT.menu.pnum.CH32v307EVT_G.upload.maximum_size=
-CH32V307EVT.menu.pnum.CH32v307EVT_G.upload.maximum_data_size=
+CH32V307EVT.menu.pnum.CH32v307EVT_G.upload.maximum_size=262144
+CH32V307EVT.menu.pnum.CH32v307EVT_G.upload.maximum_data_size=65536
 CH32V307EVT.menu.pnum.CH32v307EVT_G.build.board=CH32v307EVT_G
 CH32V307EVT.menu.pnum.CH32v307EVT_G.build.product_line=CH32V3xx
 CH32V307EVT.menu.pnum.CH32v307EVT_G.build.variant=CH32V307EVT
 
 #CH32V307EVT-black
 CH32V307EVT.menu.pnum.CH32v307EVT_B=CH32v307EVT black
-CH32V307EVT.menu.pnum.CH32v307EVT_B.upload.maximum_size=
-CH32V307EVT.menu.pnum.CH32v307EVT_B.upload.maximum_data_size=
+CH32V307EVT.menu.pnum.CH32v307EVT_B.upload.maximum_size=262144
+CH32V307EVT.menu.pnum.CH32v307EVT_B.upload.maximum_data_size=65536
 CH32V307EVT.menu.pnum.CH32v307EVT_B.build.board=CH32v307EVT_B
 CH32V307EVT.menu.pnum.CH32v307EVT_B.build.product_line=CH32V3xx
 CH32V307EVT.menu.pnum.CH32v307EVT_B.build.variant=CH32V307EVT
+
+

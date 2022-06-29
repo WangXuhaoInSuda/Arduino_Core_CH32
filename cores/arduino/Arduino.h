@@ -28,18 +28,15 @@
 #if GCC_VERSION < 60300
 #error "GCC version 6.3 or higher is required"
 #endif
-
 #include "wiring.h"
-#include "board.h"
-#include "WSerial.h"
-#include "clock.h"
-#include "pinmap.h"
 #include "pins_arduino.h"
 /* sketch */
 
 #ifdef __cplusplus
 extern "C"{
 #endif // __cplusplus
+
+extern void initVariant() __attribute__ ((weak));
 extern void setup( void ) ;
 extern void loop( void ) ;
 
@@ -47,8 +44,5 @@ void yield(void);
 #ifdef __cplusplus
 } // extern "C"
 #endif // __cplusplus
-
-// Include pins variant
-#include "pins_arduino.h"
 
 #endif // Arduino_h
