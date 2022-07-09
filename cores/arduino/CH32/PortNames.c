@@ -29,7 +29,7 @@
  */
 #include "PortNames.h"
 #include "ch32v30x_rcc.h"
-
+#include "printf.h"
 #ifdef __cplusplus
 extern "C" {
 
@@ -101,41 +101,6 @@ GPIO_TypeDef *set_GPIO_Port_Clock(uint32_t port_idx)
     case PortF:
       gpioPort = (GPIO_TypeDef *)GPIOF_BASE;
       RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF,ENABLE);
-      break;
-#endif
-#if defined GPIOG_BASE
-    case PortG:
-#if defined(CH32V3xx) && defined(PWR_CR2_IOSV)
-      // Enable VDDIO2 supply for 14 I/Os (Port G[15:2])
-      __HAL_RCC_PWR_CLK_ENABLE();
-      HAL_PWREx_EnableVddIO2();
-#endif
-      gpioPort = (GPIO_TypeDef *)GPIOG_BASE;
-      __HAL_RCC_GPIOG_CLK_ENABLE();
-      break;
-#endif
-#if defined GPIOH_BASE
-    case PortH:
-      gpioPort = (GPIO_TypeDef *)GPIOH_BASE;
-      __HAL_RCC_GPIOH_CLK_ENABLE();
-      break;
-#endif
-#if defined GPIOI_BASE
-    case PortI:
-      gpioPort = (GPIO_TypeDef *)GPIOI_BASE;
-      __HAL_RCC_GPIOI_CLK_ENABLE();
-      break;
-#endif
-#if defined GPIOJ_BASE
-    case PortJ:
-      gpioPort = (GPIO_TypeDef *)GPIOJ_BASE;
-      __HAL_RCC_GPIOJ_CLK_ENABLE();
-      break;
-#endif
-#if defined GPIOK_BASE
-    case PortK:
-      gpioPort = (GPIO_TypeDef *)GPIOK_BASE;
-      __HAL_RCC_GPIOK_CLK_ENABLE();
       break;
 #endif
     default:

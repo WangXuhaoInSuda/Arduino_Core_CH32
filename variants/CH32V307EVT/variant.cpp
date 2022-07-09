@@ -32,7 +32,7 @@ extern "C"
 #endif
 
   // wxh: digital Pin number need to be edited according to core Pin manual
- const PinName digitalPin[] = {
+PinName digitalPin[] = {
       PA_0,  // PA0/WKUP/ADC0
       PA_1,  // PA1/ADC1
       PA_2,  // PA2/ADC2
@@ -69,7 +69,6 @@ extern "C"
 
       PC_0,  // PC0/ADC10
       PC_1,  // PC1/ADC11
-      PC_2,  // PC2/ADC12
       PC_2,  // PC2/ADC12
       PC_3,  // PC3/ADC13
       PC_4,  // PC4/ADC14

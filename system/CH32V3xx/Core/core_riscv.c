@@ -7,8 +7,8 @@
 * Copyright (c) 2021 Nanjing Qinheng Microelectronics Co., Ltd.
 * SPDX-License-Identifier: Apache-2.0
 *******************************************************************************/
-#include <stdint.h>
 
+#include "core_riscv.h"
 /* define compiler specific symbols */
 #if defined ( __CC_ARM   )
   #define __ASM            __asm                                      /*!< asm keyword for ARM Compiler          */

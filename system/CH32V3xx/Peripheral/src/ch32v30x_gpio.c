@@ -521,26 +521,6 @@ void GPIO_PinRemapConfig(uint32_t GPIO_Remap, FunctionalState NewState)
     }
 }
 
-/*********************************************************************
- * @fn      GPIO_EXTILineConfig
- *
- * @brief   Selects the GPIO pin used as EXTI Line.
- *
- * @param   GPIO_PortSource - selects the GPIO port to be used as source for EXTI lines.
- *            This parameter can be GPIO_PortSourceGPIOx where x can be (A..G).
- *          GPIO_PinSource - specifies the EXTI line to be configured.
- *            This parameter can be GPIO_PinSourcex where x can be (0..15).
- *
- * @return  none
- */
-void GPIO_EXTILineConfig(uint8_t GPIO_PortSource, uint8_t GPIO_PinSource)
-{
-    uint32_t tmp = 0x00;
-
-    tmp = ((uint32_t)0x0F) << (0x04 * (GPIO_PinSource & (uint8_t)0x03));
-    AFIO->EXTICR[GPIO_PinSource >> 0x02] &= ~tmp;
-    AFIO->EXTICR[GPIO_PinSource >> 0x02] |= (((uint32_t)GPIO_PortSource) << (0x04 * (GPIO_PinSource & (uint8_t)0x03)));
-}
 
 /*********************************************************************
  * @fn      GPIO_ETH_MediaInterfaceConfig

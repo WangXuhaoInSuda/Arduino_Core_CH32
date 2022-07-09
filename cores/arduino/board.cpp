@@ -1,5 +1,5 @@
 #include "board.h"
-#include "hw_config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -8,7 +8,7 @@ void __libc_init_array(void);
 
 void init(void)
 {
-  hw_config_init();
+  analogPinInit();
 }
 
 #ifdef __cplusplus

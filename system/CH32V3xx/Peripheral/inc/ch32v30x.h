@@ -1172,7 +1172,6 @@ typedef struct
 #define TIM17_BASE            (APB2PERIPH_BASE + 0x4800)
 #define TIM9_BASE             (APB2PERIPH_BASE + 0x4C00)
 #define TIM10_BASE            (APB2PERIPH_BASE + 0x5000)
-#define TIM11_BASE            (APB2PERIPH_BASE + 0x5400)
 #define SDIO_BASE             (APB2PERIPH_BASE + 0x8000)
 
 #define DMA1_BASE             (AHBPERIPH_BASE + 0x0000)
@@ -1269,7 +1268,6 @@ typedef struct
 #define TIM17               ((TIM_TypeDef *) TIM17_BASE)
 #define TIM9                ((TIM_TypeDef *) TIM9_BASE)
 #define TIM10               ((TIM_TypeDef *) TIM10_BASE)
-#define TIM11               ((TIM_TypeDef *) TIM11_BASE)
 #define SDIO                ((SDIO_TypeDef *) SDIO_BASE)
 
 #define DMA1                ((DMA_TypeDef *) DMA1_BASE)
@@ -3613,6 +3611,14 @@ typedef struct
 
 
 /*******************  Bit definition for FLASH_ACTLR register  ******************/
+#define  FLASH_ACTLR_LATENCY                   ((uint8_t)0x03)               /* LATENCY[2:0] bits (Latency) */
+#define  FLASH_ACTLR_LATENCY_0                 ((uint8_t)0x00)               /* Bit 0 */
+#define  FLASH_ACTLR_LATENCY_1                 ((uint8_t)0x01)               /* Bit 0 */
+#define  FLASH_ACTLR_LATENCY_2                 ((uint8_t)0x02)               /* Bit 1 */
+
+#define  FLASH_ACTLR_HLFCYA                    ((uint8_t)0x08)               /* Flash Half Cycle Access Enable */
+#define  FLASH_ACTLR_PRFTBE                    ((uint8_t)0x10)               /* Prefetch Buffer Enable */
+#define  FLASH_ACTLR_PRFTBS                    ((uint8_t)0x20)               /* Prefetch Buffer Status */
 
 /******************  Bit definition for FLASH_KEYR register  ******************/
 #define  FLASH_KEYR_FKEYR                      ((uint32_t)0xFFFFFFFF)        /* FPEC Key */

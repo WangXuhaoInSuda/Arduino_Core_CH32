@@ -1,244 +1,163 @@
-/**
-  ******************************************************************************
-  * @file    uart.h
-  * @author  WI6LABS, fpistm
-  * @brief   Header for uart module
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
+//=====================================================================
+//文件名称：uart.h
+//功能概要：UART底层驱动构件头文件
+//版权所有：苏州大学嵌入式系统与物联网研究所(sumcu.suda.edu.cn)
+//更新记录：2022-01-25 V2.0  LCT
+//适用芯片：CH32V307VCT6
+//=====================================================================
 
-//need to correct
-
-/* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __UART_H
 #define __UART_H
 
-/* Includes ------------------------------------------------------------------*/
-#include "ch32_def.h"
-#include "PinNames.h"
+#include "string.h"
+#include "ch32v30x.h"
+#include "gpio.h"
 
 #ifdef __cplusplus
 extern "C" {
-#endif
 
-#if !defined(HAL_UART_MODULE_ENABLED) || defined(HAL_UART_MODULE_ONLY)
-#define serial_t void*
-#else
+#endif
+//系统时钟
+#define SYSCLK_FREQ_72MHz  (uint32_t)72000000
 
-#ifndef UART_IRQ_PRIO
-#define UART_IRQ_PRIO       1
-#endif
-#ifndef UART_IRQ_SUBPRIO
-#define UART_IRQ_SUBPRIO    0
-#endif
+//宏定义串口号
+#define UART_1    1
+#define UART_2    2
+#define UART_3    3
+#define UART_4    4
+#define UART_5    5
+#define UART_6    6
+#define UART_7    7
+#define UART_8    8
 
-/* Exported types ------------------------------------------------------------*/
-typedef struct serial_s serial_t;
+//配置UARTx使用的引脚组(TX,RX)0
+//UART_1的引脚组配置：0:PTA9~10,1:PTB6~7
+#define UART1_GROUP    0
+//UART_2的引脚组配置：0:PTA2~3
+#define UART2_GROUP    0
+//UART_3的引脚组配置：0:PTB10~11,1:PTC10~11
+#define UART3_GROUP    0
 
-struct serial_s {
-  /*  The 1st 2 members USART_TypeDef *uart
-   *  and UART_HandleTypeDef handle should
-   *  be kept as the first members of this struct
-   *  to have get_serial_obj() function work as expected
-   */
-  USART_TypeDef *uart;
-  UART_HandleTypeDef handle;
-  void (*rx_callback)(serial_t *);
-  int (*tx_callback)(serial_t *);
-  PinName pin_tx;
-  PinName pin_rx;
-  PinName pin_rts;
-  PinName pin_cts;
-  IRQn_Type irq;
-  uint8_t index;
-  uint8_t recv;
-  uint8_t *rx_buff;
-  uint8_t *tx_buff;
-  uint16_t rx_tail;
-  uint16_t tx_head;
-  volatile uint16_t rx_head;
-  volatile uint16_t tx_tail;
-  size_t tx_size;
-};
+//UART_4的引脚组配置：0:PTC10~11,1:PB0~1, 2:PTE0~1
+#define UART4_GROUP    0
 
-/* Exported constants --------------------------------------------------------*/
-#define TX_TIMEOUT  1000
+//UART_5的引脚组配置：0:PTC12~PTD2,1:PTB4~5, 2:PTE8~PTE9
+#define UART5_GROUP    0
 
-#if defined(USART2_BASE) && !defined(USART2_IRQn)
-#if defined(STM32G0xx)
-#if defined(LPUART2_BASE)
-#define USART2_IRQn USART2_LPUART2_IRQn
-#define USART2_IRQHandler USART2_LPUART2_IRQHandler
-#endif
-#endif /* STM32G0xx */
-#endif
+//UART_6的引脚组配置：0:PTC0~1,1:PTB8~9, 2:PTE10~11
+#define UART6_GROUP    0
 
-#if defined(USART3_BASE) && !defined(USART3_IRQn)
-#if defined(STM32F0xx)
-#if defined(STM32F091xC) || defined (STM32F098xx)
-#define USART3_IRQn USART3_8_IRQn
-#define USART3_IRQHandler USART3_8_IRQHandler
-#elif defined(STM32F030xC)
-#define USART3_IRQn USART3_6_IRQn
-#define USART3_IRQHandler USART3_6_IRQHandler
-#else
-#define USART3_IRQn USART3_4_IRQn
-#define USART3_IRQHandler USART3_4_IRQHandler
-#endif /* STM32F091xC || STM32F098xx */
-#elif defined(STM32G0xx)
-#if defined(LPUART2_BASE)
-#define USART3_IRQn USART3_4_5_6_LPUART1_IRQn
-#define USART3_IRQHandler USART3_4_5_6_LPUART1_IRQHandler
-#elif defined(LPUART1_BASE)
-#define USART3_IRQn USART3_4_LPUART1_IRQn
-#define USART3_IRQHandler USART3_4_LPUART1_IRQHandler
-#else
-#define USART3_IRQn USART3_4_IRQn
-#define USART3_IRQHandler USART3_4_IRQHandler
-#endif
-#endif /* STM32F0xx */
-#endif
+//UART_7的引脚组配置：0:PTC2~3,1:PTA6~7, 2:PTE12~13,
+#define UART7_GROUP    0
 
-#if defined(USART4_BASE) && !defined(USART4_IRQn)
-#if defined(STM32F0xx)
-/* IRQHandler is mapped on USART3_IRQHandler for STM32F0xx */
-#if defined(STM32F091xC) || defined (STM32F098xx)
-#define USART4_IRQn USART3_8_IRQn
-#elif defined(STM32F030xC)
-#define USART4_IRQn USART3_6_IRQn
-#else
-#define USART4_IRQn USART3_4_IRQn
-#endif /* STM32F091xC || STM32F098xx */
-#elif defined(STM32L0xx)
-#define USART4_IRQn USART4_5_IRQn
-#elif defined(STM32G0xx)
-#if defined(LPUART2_BASE)
-#define USART4_IRQn USART3_4_5_6_LPUART1_IRQn
-#elif defined(LPUART1_BASE)
-#define USART4_IRQn USART3_4_LPUART1_IRQn
-#else
-#define USART4_IRQn USART3_4_IRQn
-#endif
-#endif /* STM32G0xx */
-#endif
+//UART_8的引脚组配置：0:PTC4~5,1:PTA14~15, 2:PTE14~15
+#define UART8_GROUP    0
 
-#if defined(USART5_BASE) && !defined(USART5_IRQn)
-#if defined(STM32F0xx)
-/* IRQHandler is mapped on USART3_IRQHandler for STM32F0xx */
-#if defined(STM32F091xC) || defined (STM32F098xx)
-#define USART5_IRQn USART3_8_IRQn
-#elif defined(STM32F030xC)
-#define USART5_IRQn USART3_6_IRQn
-#endif /* STM32F091xC || STM32F098xx */
-#elif defined(STM32G0xx)
-#if defined(LPUART2_BASE)
-#define USART5_IRQn USART3_4_5_6_LPUART1_IRQn
-#endif
-#elif defined(STM32L0xx)
-#define USART5_IRQn USART4_5_IRQn
-#endif /* STM32F0xx */
-#endif
+//GPIO时钟
+#define  RCC_IOPEEN                      ((uint32_t)0x00000040)
 
-/* IRQHandler is mapped on USART3_IRQHandler for STM32F0xx */
-#if defined(USART6_BASE) && !defined(USART6_IRQn)
-#if defined (STM32F0xx)
-#if defined(STM32F091xC) || defined (STM32F098xx)
-#define USART6_IRQn USART3_8_IRQn
-#elif defined(STM32F030xC)
-#define USART6_IRQn USART3_6_IRQn
-#endif /* STM32F091xC || STM32F098xx */
-#elif defined(STM32G0xx)
-#if defined(LPUART2_BASE)
-#define USART6_IRQn USART3_4_5_6_LPUART1_IRQn
-#endif
-#endif /* STM32F0xx */
-#endif
+//USART时钟使能
+#define RCC_USART3EN   ((uint32_t)0x00040000)
+#define RCC_UART4EN    ((uint32_t)0x00080000)
+#define RCC_UART5EN    ((uint32_t)0x00100000)
+#define RCC_UART6EN    ((uint32_t)0x00000040)
+#define RCC_UART7EN    ((uint32_t)0x00000080)
+#define RCC_UART8EN    ((uint32_t)0x00000100)
+//=======================函数注释区=======================================
+//=====================================================================
+//函数名称：uart_init
+//功能概要：初始化uart模块
+//参数说明：uartNo:串口号：UART_1、UART_2、UART_3
+//          baud:波特率：300、600、1200、2400、4800、9600、19200、115200...
+//函数返回：无
+//=====================================================================
+void uart_init(uint8_t uartNo, uint32_t baud_rate);
 
-#if defined(USART7_BASE) && !defined(USART7_IRQn)
-#if defined (STM32F0xx)
-#if defined(STM32F091xC) || defined (STM32F098xx)
-#define USART7_IRQn USART3_8_IRQn
-#endif /* STM32F091xC || STM32F098xx */
-#endif /* STM32F0xx */
-#endif
+//=====================================================================
+//函数名称：uart_send1
+//参数说明：uartNo: 串口号:UART_1、UART_2、UART_3
+//          ch:要发送的字节
+//函数返回：函数执行状态：1=发送成功；0=发送失败。
+//功能概要：串行发送1个字节
+//=====================================================================
+uint8_t uart_send1(uint8_t uartNo, uint8_t ch);
 
-#if defined(USART8_BASE) && !defined(USART8_IRQn)
-#if defined (STM32F0xx)
-#if defined(STM32F091xC) || defined (STM32F098xx)
-#define USART8_IRQn USART3_8_IRQn
-#endif /* STM32F091xC || STM32F098xx */
-#endif /* STM32F0xx */
-#endif
+//=====================================================================
+//函数名称：uart_sendN
+//参数说明：uartNo: 串口号:UART_1、UART_2、UART_3
+//         buff: 发送缓冲区
+//         len:发送长度
+//函数返回： 函数执行状态：1=发送成功；0=发送失败
+//功能概要：串行 接收n个字节
+//=====================================================================
+uint8_t uart_sendN(uint8_t uartNo ,uint16_t len ,uint8_t* buff);
 
-#if defined(LPUART1_BASE) && !defined(LPUART1_IRQn)
-#if defined(STM32G0xx)
-#if defined(LPUART2_BASE)
-#define LPUART1_IRQn USART3_4_5_6_LPUART1_IRQn
-#elif defined(USART3_BASE)
-#define LPUART1_IRQn USART3_4_LPUART1_IRQn
-#endif
-#endif /* STM32G0xx */
-#endif
+ //=====================================================================
+//函数名称：uart_send_string
+//参数说明：uartNo:UART模块号:UART_1、UART_2、UART_3
+//                  buff:要发送的字符串的首地址
+//函数返回： 函数执行状态：1=发送成功；0=发送失败
+//功能概要：从指定UART端口发送一个以'\0'结束的字符串
+ //=====================================================================
+uint8_t uart_send_string(uint8_t uartNo, uint8_t *buff);
 
-#if defined(LPUART2_BASE) && !defined(LPUART2_IRQn)
-#if defined(STM32G0xx)
-#if defined(LPUART2_BASE)
-#define LPUART2_IRQn USART2_LPUART2_IRQn
-#endif
-#endif /* STM32G0xx */
-#endif
+ //=====================================================================
+//函数名称：uart_re1
+//参数说明：uartNo: 串口号:UART_1、UART_2、UART_3
+//        *fp:接收成功标志的指针:*fp=1:接收成功；*fp=0:接收失败
+//函数返回：接收返回字节
+//功能概要：串行接收1个字节
+ //=====================================================================
+uint8_t uart_re1(uint8_t uartNo,uint8_t *fp);
 
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
-void uart_init(serial_t *obj, uint32_t baudrate, uint32_t databits, uint32_t parity, uint32_t stopbits);
-void uart_deinit(serial_t *obj);
-#if defined(HAL_PWR_MODULE_ENABLED) && (defined(UART_IT_WUF) || defined(LPUART1_BASE))
-void uart_config_lowpower(serial_t *obj);
-#endif
-size_t uart_write(serial_t *obj, uint8_t data, uint16_t size);
-int uart_getc(serial_t *obj, unsigned char *c);
-void uart_attach_rx_callback(serial_t *obj, void (*callback)(serial_t *));
-void uart_attach_tx_callback(serial_t *obj, int (*callback)(serial_t *), size_t size);
+ //=====================================================================
+//函数名称：uart_reN
+//参数说明：uartNo: 串口号:UART_1、UART_2、UART_3
+//          buff: 接收缓冲区
+//          len:接收长度
+//函数返回：函数执行状态 1=接收成功;0=接收失败
+//功能概要：串行 接收n个字节,放入buff中
+ //=====================================================================
+uint8_t uart_reN(uint8_t uartNo ,uint16_t len ,uint8_t *buff);
 
-uint8_t serial_tx_active(serial_t *obj);
-uint8_t serial_rx_active(serial_t *obj);
+ //=====================================================================
+//函数名称：uart_enable_re_int
+//参数说明：uartNo: 串口号:UART_1、UART_2、UART_3
+//函数返回：无
+//功能概要：开串口接收中断
+ //=====================================================================
+void uart_enable_re_int(uint8_t uartNo);
 
-void uart_enable_tx(serial_t *obj);
-void uart_enable_rx(serial_t *obj);
+ //=====================================================================
+//函数名称：uart_disable_re_int
+//参数说明：uartNo: 串口号 :UART_1、UART_2、UART_3
+//函数返回：无
+//功能概要：关串口接收中断
+ //=====================================================================
+void uart_disable_re_int(uint8_t uartNo);
 
-size_t uart_debug_write(uint8_t *data, uint32_t size);
+ //=====================================================================
+//函数名称：uart_get_re_int
+//参数说明：uartNo: 串口号 :UART_1、UART_2、UART_3
+//函数返回：接收中断标志 1=有接收中断;0=无接收中断
+//功能概要：获取串口接收中断标志,同时禁用发送中断
+ //=====================================================================
+uint8_t uart_get_re_int(uint8_t uartNo);
 
-#endif /* HAL_UART_MODULE_ENABLED  && !HAL_UART_MODULE_ONLY */
+ //=====================================================================
+//函数名称：uart_deinit
+//参数说明：uartNo: 串口号 :UART_1、UART_2、UART_3
+//函数返回：无
+//功能概要：uart反初始化
+ //=====================================================================
+void uart_deinit(uint8_t uartNo);
+
+void USART2_IRQHandler(void);
+//=======================函数注释区结束====================================
+
 #ifdef __cplusplus
 }
+
 #endif
 
 #endif /* __UART_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

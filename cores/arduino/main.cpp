@@ -40,13 +40,12 @@ __attribute__((constructor(101))) void premain()
  */
 int main(void)
 {
-  initVariant();
 
   setup();
 
+
   for (;;) {
     loop();
-    serialEventRun();
   }
 
   return 0;

@@ -1,35 +1,66 @@
-ENTRY( _start )
+/*======================================================================
+**文件名称：STM32L431RCTX_FLASH.ld（链接文件）
+**制作单位：SD-Arm(sumcu.suda.edu.cn)
+**更新记录：20181201-20200629
+**======================================================================*/
+
+
+/*（1）【变动】相关常数定义*/
+MCU_SECTORSIZE =256; 
+MCU_FLASH_ADDR_START = 0x00000000;    /*CH32V307CVT6的FLASH起始地址*/
+GEC_USER_SECTOR_START  =452;          /*USER程序开始扇区号*/
+GEC_USER_SECTOR_END =1919;             /*USER程序结束扇区号 */
+GEC_USER_RAM_START =0x20005000;       /*USER RAM区域起始地址  */
+GEC_USER_RAM_END  =0x20020000;        /*USER RAM区域结束地址*/
+ _eusrstack =  0x20020000;	              /*BIOS RAM区域结束地址（用于启动文件）*/
+
+
+
+ENTRY( _start ) 
 
 __stack_size = 2048;
 
 PROVIDE( _stack_size = __stack_size );
 
-
+/*
 MEMORY
 {
-/* CH32V30x_D8C - CH32V305RB-CH32V305FB
-   CH32V30x_D8 - CH32V303CB-CH32V303RB
-*/
-/*
-	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 128K
-	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 32K
-*/
-    
-/* CH32V30x_D8C - CH32V307VC-CH32V307WC-CH32V307RC
-   CH32V30x_D8 - CH32V303VC-CH32V303RC
-   FLASH + RAM supports the following configuration
-   FLASH-192K + RAM-128K
-   FLASH-224K + RAM-96K
-   FLASH-256K + RAM-64K  
-   FLASH-288K + RAM-32K  
-*/
-	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 288K
-	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 32K
+	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 256K
+	RAM (xrw) : ORIGIN = 0x20000000, LENGTH = 128K
 }
+*/
+
+/*（2）【固定】MEMORY段定义*/
+MEMORY
+{
+	/*中断向量表*/
+
+    INTVEC(rx) : ORIGIN =MCU_SECTORSIZE * (GEC_USER_SECTOR_START) + MCU_FLASH_ADDR_START, 
+	              LENGTH = MCU_SECTORSIZE * 4
+
+	/*Flash代码区*/                   
+    FLASH (rx) : ORIGIN = MCU_FLASH_ADDR_START + MCU_SECTORSIZE * (GEC_USER_SECTOR_START), 
+                  LENGTH = MCU_SECTORSIZE * (GEC_USER_SECTOR_END - GEC_USER_SECTOR_START )
+    
+    /*User程序RAM区*/
+    RAM  (rwx) : ORIGIN = GEC_USER_RAM_START, 
+                  LENGTH = GEC_USER_RAM_END - GEC_USER_RAM_START
+}
+
 
 
 SECTIONS
 {
+/* （3.1）【固定】中断向量表 */
+/*
+ .isr_vector :
+  {
+    . = ALIGN(4);
+    KEEP(*(.isr_vector)) 
+    . = ALIGN(4);
+  } >INTVEC AT>INTVEC
+*/
+/*------------------------原始----------------------------*/
 
 	.init :
 	{
@@ -39,6 +70,7 @@ SECTIONS
 		. = ALIGN(4);
 		_einit = .;
 	} >FLASH AT>FLASH
+	
 
   .vector :
   {
@@ -172,7 +204,6 @@ SECTIONS
 
     .stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size :
     {
-        PROVIDE( _heap_end = . );    
         . = ALIGN(4);
         PROVIDE(_susrstack = . );
         . = . + __stack_size;
@@ -180,6 +211,3 @@ SECTIONS
     } >RAM 
 
 }
-
-
-

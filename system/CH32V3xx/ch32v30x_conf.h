@@ -35,8 +35,6 @@
 #include "ch32v30x_misc.h"
 
 
-
-
 #endif /* __CH32V30x_CONF_H */
 
 

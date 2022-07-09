@@ -17,6 +17,7 @@
 #include "pinmap.h"
 #include "pinconfig.h"
 #include "ch32v30x_gpio.h"
+#include "printf.h"
 #ifdef __cplusplus
 extern "C" {
 
@@ -62,13 +63,12 @@ bool pin_in_pinmap(PinName pin, const PinMap *map)
 void pin_function(PinName pin, int function)
 {
   /* Get the pin informations */
-  GPIO_InitTypeDef *GPIO_InitStructure = NULL;
+  GPIO_InitTypeDef GPIO_InitStructure = {0};
   uint8_t mode = CH_PIN_MODE(function);
   uint8_t cnf = CH_PIN_CNF(function);
-  uint8_t port = CH_PORT(pin);
+  uint32_t port = CH_PORT(pin);
   uint8_t pupd = CH_PIN_PUPD(function);
   uint32_t ch_pin = CH_MGPIO_PIN(pin);
-
   if (pin == (PinName)NC)
   {
     Error_Handler();
@@ -85,23 +85,23 @@ void pin_function(PinName pin, int function)
 
   if (mode > 0)
   {
-    GPIO_InitStructure->GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     switch (cnf)
     {
     case GPIO_CNF_OUTPUT_PP:
-      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_Out_PP;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
       break;
     case GPIO_CNF_OUTPUT_OD:
-      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_Out_OD;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
       break;
     case GPIO_CNF_OUTPUT_AF_PP:
-      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_AF_PP;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
       break;
     case GPIO_CNF_OUTPUT_AF_OD:
-      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_AF_OD;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_OD;
       break;
     default:
-      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_Out_OD;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
       break;
     }
   }
@@ -110,28 +110,27 @@ void pin_function(PinName pin, int function)
     switch (cnf)
     {
     case GPIO_CNF_INPUT_ANALOG:
-      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_AIN;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
       break;
     case GPIO_CNF_INPUT_FLOAT:
-      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IN_FLOATING;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
       break;
     case GPIO_CNF_INPUT_PUPD:
     {
       if (pupd == 0b01)
-        GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IPD;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
       else
-        GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IPU;
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     }
     break;
     default:
-      GPIO_InitStructure->GPIO_Mode = GPIO_Mode_IN_FLOATING;
+      GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
       break;
     }
   }
+  GPIO_SetPinMode(gpio, ch_pin, GPIO_InitStructure.GPIO_Mode, GPIO_InitStructure.GPIO_Speed);
 
-  GPIO_SetPinMode(gpio, ch_pin, GPIO_InitStructure->GPIO_Mode, GPIO_InitStructure->GPIO_Speed);
-
-  pin_DisconnectDebug(pin);
+  //pin_DisconnectDebug(pin);
 }
 
 void pinmap_pinout(PinName pin, const PinMap *map)

@@ -1,14 +1,17 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
+
+#include "emuart.h"
+#include "uart.h"
+#include "gpio.h"
+#include "flash.h"
+#include "printf.h"
 #include "interrupt.h"
-#include "analog.h"
 #include "clock.h"
 #include "digital_io.h"
-#include "dwt.h"
-#include "hw_config.h"
 #include "timer.h"
-#include "uart.h"
+
 
 /*
  * Core and peripherals registers definitions

@@ -9,7 +9,7 @@
 *******************************************************************************/
 #ifndef __CORE_RISCV_H__
 #define __CORE_RISCV_H__
-
+#include <stdint.h>
 /* IO definitions */
 #ifdef __cplusplus
   #define     __I     volatile                /* defines 'read only' permissions */
@@ -112,7 +112,7 @@ typedef struct
 #define	NVIC_KEY3				((uint32_t)0xBEEF0000)
 
 #define SysTick         ((SysTick_Type *) 0xE000F000)
-
+#include "ch32v30x.h"
 /*********************************************************************
  * @fn      __enable_irq
  *

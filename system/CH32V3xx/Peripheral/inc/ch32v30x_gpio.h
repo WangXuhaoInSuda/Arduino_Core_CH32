@@ -343,18 +343,18 @@ RV_STATIC_INLINE void GPIO_SetPinMode(GPIO_TypeDef * GPIOx, uint32_t Pin, GPIOMo
 
 #define UNUSED(X) (void)X      /* To avoid gcc/g++ warnings */
 
-#define GPIO_MODE_INPUT 0b00
-#define GPIO_MODE_OUTPUT_10Mhz 0b01
-#define GPIO_MODE_OUTPUT_2Mhz  0b10
-#define GPIO_MODE_OUTPUT_50Mhz 0b11
+#define GPIO_MODE_INPUT 0
+#define GPIO_MODE_OUTPUT_10Mhz 1
+#define GPIO_MODE_OUTPUT_2Mhz  2
+#define GPIO_MODE_OUTPUT_50Mhz 3
 
-#define GPIO_CNF_INPUT_ANALOG 0b00
-#define GPIO_CNF_INPUT_FLOAT 0b01
-#define GPIO_CNF_INPUT_PUPD  0b10
-#define GPIO_CNF_OUTPUT_PP   0b00
-#define GPIO_CNF_OUTPUT_OD   0b01
-#define GPIO_CNF_OUTPUT_AF_PP  0b10
-#define GPIO_CNF_OUTPUT_AF_OD  0b11
+#define GPIO_CNF_INPUT_ANALOG 0
+#define GPIO_CNF_INPUT_FLOAT 1
+#define GPIO_CNF_INPUT_PUPD  2
+#define GPIO_CNF_OUTPUT_PP   0
+#define GPIO_CNF_OUTPUT_OD   1
+#define GPIO_CNF_OUTPUT_AF_PP  2
+#define GPIO_CNF_OUTPUT_AF_OD  3
 
 /** @defgroup GPIO_Exported_Macros GPIO Exported Macros
   * @{
