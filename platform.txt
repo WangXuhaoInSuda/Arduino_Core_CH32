@@ -142,4 +142,11 @@ recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 
 # Uploader tool
 # -------------------
-# to be determined.
+
+tools.uartUploader.cmd=ConsoleUARTUpload
+tools.uartUploader.cmd.windows=ConsoleUARTUpload.exe
+tools.uartUploader.path.windows={runtime.tools.uartUploader.path}/bin/
+tools.uartUploader.upload.params.verbose=
+tools.uartUploader.upload.params.quiet= n
+tools.uartUploader.upload.pattern="{path}{cmd}" {upload.verbose} -f "{build.path}/{build.project_name}.hex"
+

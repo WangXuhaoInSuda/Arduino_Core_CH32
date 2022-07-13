@@ -16,6 +16,10 @@ menu.upload_method=Upload method
 #-------------------------------------------------
 # CH32V307EVT boards
 
+CH32V307EVT.menu.upload_method.uartUploader = UART Uploader
+CH32V307EVT.menu.upload_method.uartUploader.upload.protocol=
+CH32V307EVT.menu.upload_method.uartUploader.upload.tool=uartUploader
+
 CH32V307EVT.name=CH32v307EVT series
 CH32V307EVT.build.board=CH32V307EVT
 CH32V307EVT.build.mcu=rv32imac
