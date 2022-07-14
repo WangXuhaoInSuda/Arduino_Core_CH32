@@ -5,7 +5,7 @@
 # https://arduino.github.io/arduino-cli/latest/platform-specification/
 
 name=CH32 boards support
-version=1.0.0
+version=2.0.0
 
 # Compile variables
 # ----------------------
@@ -17,7 +17,7 @@ compiler.warning_flags.default=
 compiler.warning_flags.more=
 compiler.warning_flags.all=
 
-compiler.path={runtime.tools.mingw32-5.1.6.path}/bin/
+compiler.path={runtime.tools.riscv-none-embed-gcc.path}/bin/
 
 compiler.S.cmd=riscv-none-embed-gcc
 compiler.c.cmd=riscv-none-embed-gcc
@@ -143,8 +143,8 @@ recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 # Uploader tool
 # -------------------
 
-tools.uartUploader.cmd=ConsoleUARTUpload
-tools.uartUploader.cmd.windows=ConsoleUARTUpload.exe
+tools.uartUploader.cmd=ConsoleUpdate
+tools.uartUploader.cmd.windows=ConsoleUpdate.exe
 tools.uartUploader.path.windows={runtime.tools.uartUploader.path}/bin/
 tools.uartUploader.upload.params.verbose=
 tools.uartUploader.upload.params.quiet= n
